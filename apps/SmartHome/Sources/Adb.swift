@@ -249,6 +249,36 @@ final class Adb {
         return lines.joined(separator: "\n")
     }
 
+    /// Puts a Fire TV into Display Mirroring (Miracast) so an Android phone or Windows PC can mirror to it.
+    /// Amazon doesn't document the screen's name, so try the known ones, then fall back to the display settings.
+    func startMirroring(_ ip: String) async throws -> String {
+        _ = try? await shell(ip, "input keyevent 224")
+        let tries = ["am start -n com.amazon.cast.sink/.DisplayMirroringSinkActivity",
+                     "am start -a com.amazon.cast.sink.action.START",
+                     "am start -n com.amazon.tv.settings.v2/com.amazon.tv.settings.v2.tv.mirroring.DisplayMirroringActivity"]
+        for t in tries {
+            let r = try await shell(ip, t)
+            if r.range(of: "error", options: .caseInsensitive) == nil && r.range(of: "exception", options: .caseInsensitive) == nil {
+                return "Display Mirroring is on. On the Android phone or Windows PC, choose Cast or Smart View (Windows: press Windows + K) and pick this TV."
+            }
+        }
+        _ = try await shell(ip, "am start -a android.settings.CAST_SETTINGS")
+        return "Opened the TV's mirroring settings. Choose Enable Display Mirroring on the TV."
+    }
+
+    /// iPhones can't use Miracast. AirScreen makes a Fire TV accept AirPlay, so Control Center > Screen Mirroring works.
+    func mirrorIPhone(_ ip: String) async throws -> String {
+        let pkg = "com.ionitech.airscreen"
+        let has = try await shell(ip, "pm path \(pkg)")
+        if has.contains("package:") {
+            try await launch(ip, pkg)
+            return "AirScreen is open on the TV. On this iPhone, open Control Center, tap Screen Mirroring and pick the TV."
+        }
+        _ = try? await shell(ip, "input keyevent 224")
+        _ = try await shell(ip, "am start -a android.intent.action.VIEW -d 'amzn://apps/android?p=\(pkg)'")
+        return "The TV is showing AirScreen in the app store. Tap Get on the TV, then press this button again."
+    }
+
     func youtube(_ ip: String, _ link: String) async throws {
         guard let id = YouTube.videoId(link.trimmed) else { throw AppError("That doesn't look like a YouTube link.") }
         _ = try? await shell(ip, "input keyevent 224")

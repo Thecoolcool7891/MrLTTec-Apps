@@ -100,6 +100,17 @@ struct AdbView: View {
                     }
                 }
 
+                Card("Screen mirroring") {
+                    Button {
+                        Task { await runner.run(nil) { try await Adb.shared.startMirroring(device.ip) } }
+                    } label: { Label("Turn on Display Mirroring (Android, Windows)", systemImage: "rectangle.on.rectangle") }
+                    Button {
+                        Task { await runner.run(nil) { try await Adb.shared.mirrorIPhone(device.ip) } }
+                    } label: { Label("Mirror this iPhone (AirScreen)", systemImage: "iphone.and.arrow.forward") }
+                    Text("Fire TV mirroring uses Miracast, which iPhones don't support. AirScreen is a free app that lets the TV accept iPhone Screen Mirroring.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+
                 Card("YouTube link") {
                     HStack {
                         TextField("Paste a YouTube link", text: $yt).textFieldStyle(.roundedBorder).textInputAutocapitalization(.never).autocorrectionDisabled()
