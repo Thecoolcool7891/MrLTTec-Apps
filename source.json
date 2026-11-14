@@ -86,6 +86,15 @@
     {
       "versions": [
         {
+          "version": "2.0.16",
+          "buildVersion": "16",
+          "date": "2026-11-14T23:02:16Z",
+          "localizedDescription": "MrLTTec Home: Fire TV screen mirroring (start Display Mirroring, AirScreen for iPhone)",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.16/SmartHome-2.0.16.ipa",
+          "size": 1305843,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "2.0.15",
           "buildVersion": "15",
           "date": "2026-11-14T22:57:22Z",
@@ -165,15 +174,6 @@
           "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.7/SmartHome-2.0.7.ipa",
           "size": 857339,
           "minOSVersion": "26.0"
-        },
-        {
-          "version": "1.0.4",
-          "buildVersion": "4",
-          "date": "2026-11-14T21:29:32Z",
-          "localizedDescription": "MrLTTec Home: add T badge to the app icon",
-          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.4/SmartHome-1.0.4.ipa",
-          "size": 389082,
-          "minOSVersion": "26.0"
         }
       ],
       "name": "MrLTTec Home",
@@ -191,11 +191,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.15",
-      "versionDate": "2026-11-14T22:57:22Z",
-      "versionDescription": "Fix crash when starting AirPlay / Apple TV pairing (big-number compare read past the end)",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.15/SmartHome-2.0.15.ipa",
-      "size": 1299771
+      "version": "2.0.16",
+      "versionDate": "2026-11-14T23:02:16Z",
+      "versionDescription": "MrLTTec Home: Fire TV screen mirroring (start Display Mirroring, AirScreen for iPhone)",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.16/SmartHome-2.0.16.ipa",
+      "size": 1305843
     }
   ],
   "news": []
