@@ -44,9 +44,9 @@ struct SettingsView: View {
             .confirmationDialog("Remove every saved device?", isPresented: $confirmClear, titleVisibility: .visible) {
                 Button("Clear all", role: .destructive) { store.clearAll(); Haptic.success() }
             }
-            .confirmationDialog("Forget Samsung pairings, MAC addresses and Xbox Live IDs?", isPresented: $confirmPairings, titleVisibility: .visible) {
+            .confirmationDialog("Forget Samsung and Fire TV pairings, MAC addresses and Xbox Live IDs?", isPresented: $confirmPairings, titleVisibility: .visible) {
                 Button("Forget", role: .destructive) {
-                    for k in ["samsungTokens", "samsungMacs", "xbox"] { UserDefaults.standard.removeObject(forKey: k) }
+                    for k in ["samsungTokens", "samsungMacs", "xbox", "firetv"] { UserDefaults.standard.removeObject(forKey: k) }
                     Haptic.success()
                 }
             }
