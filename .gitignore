@@ -4,3 +4,4 @@ Payload/
 *.ipa
 apps/*/Sources/Info.plist
 .DS_Store
+apps/*/Broadcast/Info.plist
