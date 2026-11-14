@@ -59,6 +59,15 @@
     {
       "versions": [
         {
+          "version": "2.0.10",
+          "buildVersion": "10",
+          "date": "2026-11-14T22:29:02Z",
+          "localizedDescription": "MrLTTec Home: Cast to TVs and speakers (Google Cast, DLNA, YouTube over DIAL, AirPlay) with a phone media server",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.10/SmartHome-2.0.10.ipa",
+          "size": 1093184,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "2.0.9",
           "buildVersion": "9",
           "date": "2026-11-14T22:23:18Z",
@@ -119,11 +128,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.9",
-      "versionDate": "2026-11-14T22:23:18Z",
-      "versionDescription": "MrLTTec Home: Fire TV (PIN) remote",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.9/SmartHome-2.0.9.ipa",
-      "size": 963554
+      "version": "2.0.10",
+      "versionDate": "2026-11-14T22:29:02Z",
+      "versionDescription": "MrLTTec Home: Cast to TVs and speakers (Google Cast, DLNA, YouTube over DIAL, AirPlay) with a phone media server",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.10/SmartHome-2.0.10.ipa",
+      "size": 1093184
     }
   ],
   "news": []
