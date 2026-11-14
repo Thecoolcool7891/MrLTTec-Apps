@@ -125,56 +125,68 @@ struct UpdateBanner: View {
 struct UpdateSheet: View {
     @ObservedObject var updater: Updater
     @State private var release: Updater.Release?
-    @State private var share: URL?
+    @State private var notFound = false
+
+    /// Flare Store's app link. We try the likely ones in order, then fall back to its website.
+    static let flareLinks = ["flarestore://", "flare://", "flare-store://"]
+    static let flareWeb = URL(string: "https://flarestore.app")!
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 18) {
+            VStack(spacing: 16) {
                 Image(systemName: "arrow.down.app.fill").font(.system(size: 56)).foregroundStyle(.tint).padding(.top, 20)
-                Text("Version \(release?.version ?? "")").font(.title2.weight(.bold))
+                Text("Version \(release?.version ?? "") is out").font(.title2.weight(.bold))
                 if let n = release?.notes, !n.isEmpty {
                     Text(n).font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(.horizontal)
                 }
-                Spacer()
-                switch updater.state {
-                case .downloading(let p):
-                    ProgressView(value: p) { Text("Downloading… \(Int(p * 100))%") }.padding(.horizontal, 30)
-                case .ready(let file):
-                    Text("Downloaded. Choose your signer (like Flare) in the share sheet to install it.")
-                        .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(.horizontal, 30)
-                    Button { share = file } label: { Label("Open in signer", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity) }
-                        .buttonStyle(.borderedProminent).controlSize(.large).padding(.horizontal, 30)
-                case .failed(let m):
-                    Text(m).foregroundStyle(.orange).font(.footnote)
-                    downloadButton
-                default:
-                    downloadButton
+
+                VStack(alignment: .leading, spacing: 10) {
+                    step(1, "Open Flare Store")
+                    step(2, "Go to Library")
+                    step(3, "Press this app")
+                    step(4, "Tap Update")
                 }
-                Text("You'll install it the same way you installed this app. Your saved devices stay.")
-                    .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(.horizontal, 30).padding(.bottom, 10)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .padding(.horizontal, 24)
+
+                Spacer()
+
+                Button { openFlare() } label: {
+                    Label("Open Flare Store", systemImage: "arrow.up.forward.app").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent).controlSize(.large).padding(.horizontal, 30)
+
+                if notFound {
+                    Text("Couldn't open the Flare Store app, so its website opened instead. Open Flare Store from your Home Screen.")
+                        .font(.caption).foregroundStyle(.orange).multilineTextAlignment(.center).padding(.horizontal, 30)
+                }
+                Text("You have \(updater.current). Your saved devices stay after updating.")
+                    .font(.caption).foregroundStyle(.secondary).padding(.bottom, 10)
             }
-            .navigationTitle("Update")
+            .navigationTitle("Update available")
             .navigationBarTitleDisplayMode(.inline)
         }
         .presentationDetents([.medium, .large])
         .onAppear { release = updater.available ?? release }
-        .sheet(item: Binding(get: { share.map { ShareItem(url: $0) } }, set: { share = $0?.url })) { item in
-            ShareSheet(items: [item.url]).ignoresSafeArea()
+    }
+
+    private func step(_ n: Int, _ text: String) -> some View {
+        HStack(spacing: 12) {
+            Text("\(n)").font(.subheadline.weight(.bold)).foregroundStyle(.white)
+                .frame(width: 26, height: 26).background(.tint, in: Circle())
+            Text(text).font(.body)
         }
     }
 
-    private var downloadButton: some View {
-        Button {
-            guard let r = release else { return }
-            Task {
-                await updater.download(r)
-                if case .ready(let f) = updater.state { share = f }
-            }
-        } label: {
-            Label("Download update", systemImage: "arrow.down.circle").frame(maxWidth: .infinity)
+    private func openFlare(_ i: Int = 0) {
+        guard i < Self.flareLinks.count, let u = URL(string: Self.flareLinks[i]) else {
+            notFound = true
+            UIApplication.shared.open(Self.flareWeb)
+            return
         }
-        .buttonStyle(.borderedProminent).controlSize(.large).padding(.horizontal, 30)
-        .disabled(release == nil)
+        UIApplication.shared.open(u) { ok in if !ok { openFlare(i + 1) } }
     }
 }
 
