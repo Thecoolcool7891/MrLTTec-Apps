@@ -10,6 +10,15 @@
     {
       "versions": [
         {
+          "version": "1.0.4",
+          "buildVersion": "4",
+          "date": "2026-11-14T21:29:32Z",
+          "localizedDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.4/BuzzLab-1.0.4.ipa",
+          "size": 358477,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.1",
           "buildVersion": "1",
           "date": "2026-11-14T17:57:29Z",
@@ -32,14 +41,23 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.1",
-      "versionDate": "2026-11-14T17:57:29Z",
+      "version": "1.0.4",
+      "versionDate": "2026-11-14T21:29:32Z",
       "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.1/BuzzLab-1.0.1.ipa",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.4/BuzzLab-1.0.4.ipa",
       "size": 358477
     },
     {
       "versions": [
+        {
+          "version": "1.0.4",
+          "buildVersion": "4",
+          "date": "2026-11-14T21:29:32Z",
+          "localizedDescription": "MrLTTec Home: add T badge to the app icon",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.4/SmartHome-1.0.4.ipa",
+          "size": 389082,
+          "minOSVersion": "26.0"
+        },
         {
           "version": "1.0.2",
           "buildVersion": "2",
@@ -65,11 +83,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "1.0.2",
-      "versionDate": "2026-11-14T21:25:42Z",
-      "versionDescription": "Add MrLTTec Home: Smart Home Tool running natively on iPhone",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.2/SmartHome-1.0.2.ipa",
-      "size": 368673
+      "version": "1.0.4",
+      "versionDate": "2026-11-14T21:29:32Z",
+      "versionDescription": "MrLTTec Home: add T badge to the app icon",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.4/SmartHome-1.0.4.ipa",
+      "size": 389082
     }
   ],
   "news": []
