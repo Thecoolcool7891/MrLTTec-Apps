@@ -16,6 +16,8 @@ struct DeviceDetailView: View {
             case "wemo", "wizplug": PlugView(device: device)
             case "xbox": XboxView(device: device)
             case "firetv": FireTVView(device: device)
+            case "adb": AdbView(device: device)
+            case "appletv": AppleTVView(device: device)
             default: UnsupportedView(device: device)
             }
         }

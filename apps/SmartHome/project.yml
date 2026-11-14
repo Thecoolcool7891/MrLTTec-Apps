@@ -29,6 +29,7 @@ targets:
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
         UIUserInterfaceStyle: Dark
+        NSBonjourServices: [_companion-link._tcp]
         NSLocalNetworkUsageDescription: MrLTTec Home finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

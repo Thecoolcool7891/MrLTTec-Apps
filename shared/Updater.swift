@@ -6,6 +6,8 @@ import SwiftUI
 @MainActor
 final class Updater: ObservableObject {
     static let sourceURL = URL(string: "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/source/source.json")!
+    /// GitHub's API serves the newest source.json within about a minute (the download links can lag a few minutes).
+    static let apiURL = URL(string: "https://api.github.com/repos/Thecoolcool7891/MrLTTec-Apps/contents/source.json")!
 
     struct Release: Equatable { let version: String; let notes: String; let url: URL; let size: Int }
 
@@ -27,9 +29,16 @@ final class Updater: ObservableObject {
         default: state = .checking
         }
         do {
-            var req = URLRequest(url: Self.sourceURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
-            req.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
-            let (data, _) = try await URLSession.shared.data(for: req)
+            var api = URLRequest(url: Self.apiURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
+            api.setValue("application/vnd.github.raw+json", forHTTPHeaderField: "Accept")
+            var data: Data
+            if let (d, r) = try? await URLSession.shared.data(for: api), (r as? HTTPURLResponse)?.statusCode == 200 {
+                data = d
+            } else {
+                var req = URLRequest(url: Self.sourceURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
+                req.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+                (data, _) = try await URLSession.shared.data(for: req)
+            }
             guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let apps = root["apps"] as? [[String: Any]],
                   let app = apps.first(where: { $0["bundleIdentifier"] as? String == bundleId }) else {

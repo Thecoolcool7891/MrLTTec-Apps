@@ -198,7 +198,7 @@ struct AddDeviceSheet: View {
         NavigationStack {
             Form {
                 Picker("Type", selection: $type) {
-                    ForEach(Device.types.filter { !["adb", "appletv"].contains($0) }, id: \.self) { t in
+                    ForEach(Device.types, id: \.self) { t in
                         Text(Device(type: t, ip: "", name: "", detail: "").kindName).tag(t)
                     }
                 }

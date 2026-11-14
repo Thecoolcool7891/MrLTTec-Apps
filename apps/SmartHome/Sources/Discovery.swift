@@ -10,6 +10,7 @@ enum Discovery {
         if ips.isEmpty { return [] }
         async let wiz = Wiz.find()
         async let xbox = Xbox.find(ips)
+        async let atvs = AppleTV.browse(seconds: 3)
         let targets = ips.flatMap { ip in ports.map { (ip, $0) } }
         let sweep = (try? await blocking { LowNet.tcpSweep(targets, timeoutMs: 2500) }) ?? LowNet.SweepResult()
 
@@ -27,6 +28,10 @@ enum Discovery {
         out += await wiz
         for x in await xbox where isPrivateIp(x.ip) {
             out.append(["ip": x.ip, "type": "xbox", "name": x.name, "detail": x.liveId.isEmpty ? "Xbox" : "Xbox, Live ID \(x.liveId)"])
+        }
+        for a in await atvs where !out.contains(where: { $0["ip"] == a.ip && $0["type"] == "appletv" }) {
+            Store.set("atvPort", a.ip, "\(a.port)")
+            out.append(["ip": a.ip, "type": "appletv", "name": a.name, "detail": "Apple TV"])
         }
         return out.sorted { ipLess($0["ip"] ?? "", $1["ip"] ?? "") }
     }
