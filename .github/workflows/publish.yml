@@ -47,7 +47,7 @@ jobs:
             APPS=$(ls apps)
           else
             CHANGED=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
-            if echo "$CHANGED" | grep -qE '^(\.github|scripts)/'; then
+            if echo "$CHANGED" | grep -qE '^scripts/'; then
               APPS=$(ls apps)
             else
               APPS=$(echo "$CHANGED" | grep '^apps/' | cut -d/ -f2 | sort -u || true)
@@ -84,3 +84,19 @@ jobs:
             echo "Push raced with another build, retrying ($attempt)"; sleep 5
           done
           exit 1
+
+      # raw.githubusercontent.com caches files for 5 minutes. Release downloads are not cached that way,
+      # so the same source.json is also attached to a release named "source" for instant updates:
+      # https://github.com/<owner>/<repo>/releases/download/source/source.json
+      - name: Publish uncached source link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch -q origin main
+          git show origin/main:source.json > "$RUNNER_TEMP/source.json"
+          if ! gh release view source >/dev/null 2>&1; then
+            gh release create source --title "App source" --latest=false \
+              --notes "Add this to your sideload app: https://github.com/$GITHUB_REPOSITORY/releases/download/source/source.json"
+          fi
+          gh release upload source "$RUNNER_TEMP/source.json" --clobber
+          echo "Uploaded https://github.com/$GITHUB_REPOSITORY/releases/download/source/source.json"
