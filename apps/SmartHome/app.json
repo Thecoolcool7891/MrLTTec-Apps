@@ -1,0 +1,15 @@
+{
+  "name": "MrLTTec Home",
+  "scheme": "SmartHome",
+  "bundleIdentifier": "com.mrlttec.smarthome",
+  "developerName": "MrLTTec",
+  "subtitle": "Control the TVs, speakers and lights on any Wi-Fi.",
+  "localizedDescription": "The MrLTTec Smart Home Tool, now on your iPhone. Join any Wi-Fi, tap Discover, and control what is on that network: Sonos speakers, Roku, Samsung TVs, Wemo plugs, WLED strips, WiZ lights and outlets, and turning on an Xbox. Includes network tools: list every device, ping, and check ports. No PC, server or internet needed.",
+  "tintColor": "#8B5E3C",
+  "category": "utilities",
+  "minOSVersion": "26.0",
+  "baseVersion": "1.0",
+  "privacy": {
+    "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
+  }
+}
