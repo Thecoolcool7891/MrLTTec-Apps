@@ -86,6 +86,15 @@
     {
       "versions": [
         {
+          "version": "2.0.18",
+          "buildVersion": "18",
+          "date": "2026-11-14T23:34:30Z",
+          "localizedDescription": "Center the broadcast button in its circle",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.18/SmartHome-2.0.18.ipa",
+          "size": 1573084,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "2.0.17",
           "buildVersion": "17",
           "date": "2026-11-14T23:27:23Z",
@@ -165,15 +174,6 @@
           "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.9/SmartHome-2.0.9.ipa",
           "size": 963554,
           "minOSVersion": "26.0"
-        },
-        {
-          "version": "2.0.8",
-          "buildVersion": "8",
-          "date": "2026-11-14T22:15:22Z",
-          "localizedDescription": "MrLTTec Home: in-app updater (checks the source, downloads the IPA, opens it in your signer)",
-          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.8/SmartHome-2.0.8.ipa",
-          "size": 914311,
-          "minOSVersion": "26.0"
         }
       ],
       "name": "MrLTTec Home",
@@ -191,11 +191,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.17",
-      "versionDate": "2026-11-14T23:27:23Z",
-      "versionDescription": "MrLTTec Home: new house-and-wrench icon",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.17/SmartHome-2.0.17.ipa",
-      "size": 1571829
+      "version": "2.0.18",
+      "versionDate": "2026-11-14T23:34:30Z",
+      "versionDescription": "Center the broadcast button in its circle",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.18/SmartHome-2.0.18.ipa",
+      "size": 1573084
     }
   ],
   "news": []
