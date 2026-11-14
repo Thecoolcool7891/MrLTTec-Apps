@@ -1,0 +1,77 @@
+name: Build & publish apps
+
+on:
+  push:
+    branches: [main]
+    paths: ["apps/**", "scripts/**", ".github/workflows/**"]
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App folder to build (leave blank for all)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -n 1)
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Decide which apps to build
+        id: pick
+        env:
+          INPUT_APP: ${{ inputs.app }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$INPUT_APP" ]; then
+            APPS="$INPUT_APP"
+          elif [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            APPS=$(ls apps)
+          else
+            CHANGED=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
+            if echo "$CHANGED" | grep -qE '^(\.github|scripts)/'; then
+              APPS=$(ls apps)
+            else
+              APPS=$(echo "$CHANGED" | grep '^apps/' | cut -d/ -f2 | sort -u || true)
+            fi
+          fi
+          echo "Building: $APPS"
+          echo "apps=$(echo $APPS)" >> "$GITHUB_OUTPUT"
+
+      - name: Build, release, update source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPS: ${{ steps.pick.outputs.apps }}
+        run: |
+          for APP in $APPS; do
+            [ -f "apps/$APP/app.json" ] || continue
+            bash scripts/build_app.sh "$APP"
+          done
+
+      - name: Commit source.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Update source.json"
+          git pull --rebase origin main
+          git push origin HEAD:main

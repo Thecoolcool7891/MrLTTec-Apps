@@ -1,0 +1,12 @@
+{
+  "name": "Buzz Lab",
+  "scheme": "BuzzLab",
+  "bundleIdentifier": "com.mrlttec.buzzlab",
+  "developerName": "MrLTTec",
+  "subtitle": "Play with your iPhone's vibrations.",
+  "localizedDescription": "Buzz Lab is a playground for your iPhone's Taptic Engine. Tap through Apple's built-in haptics, try 12 custom vibration patterns like Heartbeat, Drumroll, SOS and Earthquake, or drag around the Touch Pad to control a live rumble.",
+  "tintColor": "#FF8C00",
+  "category": "utilities",
+  "minOSVersion": "26.0",
+  "baseVersion": "1.0"
+}
