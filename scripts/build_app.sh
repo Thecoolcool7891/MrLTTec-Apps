@@ -40,4 +40,6 @@ NOTES="$(git log -1 --pretty=%s -- "$DIR")"
 gh release create "$TAG" "$DIR/$IPA" --title "$NAME $VERSION" --notes "$NOTES"
 URL="https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$IPA"
 
-python3 scripts/update_source.py "$APP" "$VERSION" "$BUILD" "$DIR/$IPA" "$URL" "$NOTES"
+# source.json is updated in a later step, on top of the newest main (so parallel builds never collide).
+mkdir -p "$RUNNER_TEMP/updates"
+printf '%q ' "$APP" "$VERSION" "$BUILD" "$PWD/$DIR/$IPA" "$URL" "$NOTES" > "$RUNNER_TEMP/updates/$APP.args"

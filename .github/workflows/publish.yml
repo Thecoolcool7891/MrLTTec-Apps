@@ -66,12 +66,21 @@ jobs:
             bash scripts/build_app.sh "$APP"
           done
 
-      - name: Commit source.json
+      - name: Update source.json
         run: |
+          shopt -s nullglob
+          files=("$RUNNER_TEMP"/updates/*.args)
+          if [ ${#files[@]} -eq 0 ]; then echo "Nothing built"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add source.json
-          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
-          git commit -m "Update source.json"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for attempt in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            for f in "${files[@]}"; do eval "python3 scripts/update_source.py $(cat "$f")"; done
+            git add source.json
+            if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+            git commit -q -m "Update source.json"
+            if git push -q origin HEAD:main; then echo "source.json updated"; exit 0; fi
+            echo "Push raced with another build, retrying ($attempt)"; sleep 5
+          done
+          exit 1
