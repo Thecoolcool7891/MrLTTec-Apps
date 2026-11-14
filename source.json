@@ -37,6 +37,39 @@
       "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
       "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.1/BuzzLab-1.0.1.ipa",
       "size": 358477
+    },
+    {
+      "versions": [
+        {
+          "version": "1.0.2",
+          "buildVersion": "2",
+          "date": "2026-11-14T21:25:42Z",
+          "localizedDescription": "Add MrLTTec Home: Smart Home Tool running natively on iPhone",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.2/SmartHome-1.0.2.ipa",
+          "size": 368673,
+          "minOSVersion": "26.0"
+        }
+      ],
+      "name": "MrLTTec Home",
+      "bundleIdentifier": "com.mrlttec.smarthome",
+      "developerName": "MrLTTec",
+      "subtitle": "Control the TVs, speakers and lights on any Wi-Fi.",
+      "localizedDescription": "The MrLTTec Smart Home Tool, now on your iPhone. Join any Wi-Fi, tap Discover, and control what is on that network: Sonos speakers, Roku, Samsung TVs, Wemo plugs, WLED strips, WiZ lights and outlets, and turning on an Xbox. Includes network tools: list every device, ping, and check ports. No PC, server or internet needed.",
+      "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/apps/SmartHome/icon.png",
+      "tintColor": "#8B5E3C",
+      "category": "utilities",
+      "screenshots": [],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
+        }
+      },
+      "version": "1.0.2",
+      "versionDate": "2026-11-14T21:25:42Z",
+      "versionDescription": "Add MrLTTec Home: Smart Home Tool running natively on iPhone",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.2/SmartHome-1.0.2.ipa",
+      "size": 368673
     }
   ],
   "news": []
