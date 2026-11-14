@@ -1,0 +1,34 @@
+name: Test build (no publish)
+
+# Compiles apps on any branch except main, to catch errors before release.
+# Nothing is released and source.json is not touched.
+on:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Build every app
+        run: |
+          for DIR in apps/*/; do
+            APP=$(basename "$DIR")
+            SCHEME=$(python3 -c "import json; print(json.load(open('$DIR/app.json'))['scheme'])")
+            echo "::group::$APP"
+            (cd "$DIR" && xcodegen generate && xcodebuild -project "$SCHEME.xcodeproj" -scheme "$SCHEME" -configuration Release \
+              -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
+              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build)
+            echo "::endgroup::"
+          done

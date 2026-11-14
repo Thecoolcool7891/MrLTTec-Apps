@@ -293,7 +293,8 @@ enum CastScan {
         // 1) SSDP (may be blocked by iOS without Apple's multicast permission; then the port scan below still finds most things).
         let search: [String] = ["urn:schemas-upnp-org:device:MediaRenderer:1", "urn:dial-multiscreen-org:service:dial:1"]
         let msgs = search.map { Data("M-SEARCH * HTTP/1.1\r\nHOST: 239.255.255.250:1900\r\nMAN: \"ssdp:discover\"\r\nMX: 1\r\nST: \($0)\r\n\r\n".utf8) }
-        async let ssdp = (try? await blocking { LowNet.udpSweep(["239.255.255.250"], port: 1900, payloads: msgs, waitMs: 2500, repeats: 2) }) ?? []
+        // Ask the multicast group, and also every address directly (works even when iOS blocks multicast).
+        async let ssdp = (try? await blocking { LowNet.udpSweep(["239.255.255.250"] + ips, port: 1900, payloads: msgs, waitMs: 2500, repeats: 2) }) ?? []
         // 2) Port scan for Cast (8008/8009), AirPlay (7000) and Sonos (1400 has a DLNA player).
         let ports: [UInt16] = [7000, 8008, 8009, 1400]
         let sweep = (try? await blocking { LowNet.tcpSweep(ips.flatMap { ip in ports.map { (ip, $0) } }, timeoutMs: 2000) }) ?? LowNet.SweepResult()
