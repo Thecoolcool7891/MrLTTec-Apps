@@ -310,3 +310,75 @@ func ipLess(_ a: String, _ b: String) -> Bool {
     let x = a.split(separator: ".").compactMap { Int($0) }, y = b.split(separator: ".").compactMap { Int($0) }
     return x.lexicographicallyPrecedes(y)
 }
+
+// MARK: - Live state for the app screens
+
+extension Wemo {
+    /// nil = no answer
+    static func state(_ ip: String) async -> Bool? {
+        for p in [49153, 49152, 49154, 49155] {
+            if let g = try? await Http.call("http://\(ip):\(p)/upnp/control/basicevent1", method: "POST", body: body("GetBinaryState", ""),
+                                            contentType: "text/xml; charset=\"utf-8\"",
+                                            headers: ["SOAPAction": "\"urn:Belkin:service:basicevent:1#GetBinaryState\""], timeout: 2) {
+                return !(xmlTag(g.text, "BinaryState") ?? "0").hasPrefix("0")
+            }
+        }
+        return nil
+    }
+
+    static func info(_ ip: String) async throws -> String {
+        for p in [49153, 49152, 49154, 49155] {
+            if let x = try? await Http.call("http://\(ip):\(p)/setup.xml", timeout: 2).text {
+                let fields = [("Name", "friendlyName"), ("Model", "modelName"), ("Model number", "modelNumber"),
+                              ("Firmware", "firmwareVersion"), ("Serial", "serialNumber"), ("MAC", "macAddress")]
+                return fields.compactMap { f in xmlTag(x, f.1).map { "\(f.0): \($0)" } }.joined(separator: "\n")
+            }
+        }
+        throw AppError("Wemo did not respond.")
+    }
+}
+
+extension Wled {
+    struct State { var on = false; var bri = 128 }
+
+    static func state(_ ip: String) async -> State? {
+        guard let j = try? await Http.json("http://\(ip)/json/state", timeout: 2) else { return nil }
+        return State(on: j["on"] as? Bool ?? false, bri: j["bri"] as? Int ?? 128)
+    }
+
+    static func setColor(_ ip: String, r: Int, g: Int, b: Int) async throws {
+        let body = "{\"on\":true,\"seg\":[{\"col\":[[\(r),\(g),\(b)]]}]}"
+        _ = try await Http.call("http://\(ip)/json/state", method: "POST", body: Data(body.utf8), contentType: "application/json", timeout: 3)
+    }
+
+    static func effects(_ ip: String) async throws -> [String] {
+        let r = try await Http.call("http://\(ip)/json/eff", timeout: 3)
+        return (try? JSONSerialization.jsonObject(with: r.data) as? [String]) ?? []
+    }
+
+    static func setEffect(_ ip: String, _ index: Int) async throws {
+        let body = "{\"on\":true,\"seg\":[{\"fx\":\(index)}]}"
+        _ = try await Http.call("http://\(ip)/json/state", method: "POST", body: Data(body.utf8), contentType: "application/json", timeout: 3)
+    }
+
+    static func info(_ ip: String) async throws -> String {
+        let j = try await Http.json("http://\(ip)/json/info", timeout: 3)
+        var lines: [String] = []
+        if let v = j["name"] { lines.append("Name: \(v)") }
+        if let v = j["ver"] { lines.append("WLED version: \(v)") }
+        if let leds = j["leds"] as? [String: Any], let c = leds["count"] { lines.append("LEDs: \(c)") }
+        if let w = j["wifi"] as? [String: Any], let s = w["signal"] { lines.append("Wi-Fi signal: \(s)%") }
+        if let v = j["arch"] { lines.append("Chip: \(v)") }
+        if let v = j["mac"] { lines.append("MAC: \(v)") }
+        return lines.joined(separator: "\n")
+    }
+}
+
+enum WizScenes {
+    static let all: [(Int, String)] = [(1, "Ocean"), (2, "Romance"), (3, "Sunset"), (4, "Party"), (5, "Fireplace"), (6, "Cozy"),
+        (7, "Forest"), (8, "Pastel colors"), (9, "Wake up"), (10, "Bedtime"), (11, "Warm white"), (12, "Daylight"),
+        (13, "Cool white"), (14, "Night light"), (15, "Focus"), (16, "Relax"), (17, "True colors"), (18, "TV time"),
+        (19, "Plant growth"), (20, "Spring"), (21, "Summer"), (22, "Fall"), (23, "Deep dive"), (24, "Jungle"),
+        (25, "Mojito"), (26, "Club"), (27, "Christmas"), (28, "Halloween"), (29, "Candlelight"), (30, "Golden white"),
+        (31, "Pulse"), (32, "Steampunk")]
+}

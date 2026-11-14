@@ -91,69 +91,6 @@ enum Discovery {
     }
 }
 
-// MARK: - Saved devices (saved-devices.json on the phone)
-
-enum Saved {
-    static let types: Set<String> = ["sonos", "samsung", "wemo", "adb", "firetv", "appletv", "roku", "wled", "wiz", "wizplug", "xbox"]
-    private static let lock = NSLock()
-
-    private static var url: URL {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appendingPathComponent("saved-devices.json")
-    }
-
-    private static func load() -> [[String: Any]] {
-        guard let d = try? Data(contentsOf: url), let a = try? JSONSerialization.jsonObject(with: d) as? [[String: Any]] else { return [] }
-        return a.filter { types.contains($0["type"] as? String ?? "") && isPrivateIp($0["ip"] as? String ?? "") }
-    }
-
-    private static func save(_ list: [[String: Any]]) {
-        if let d = try? JSONSerialization.data(withJSONObject: list, options: [.prettyPrinted]) { try? d.write(to: url, options: .atomic) }
-    }
-
-    /// Merges scan results in. Names the user typed are kept; removed devices stay removed.
-    static func addFound(_ found: [[String: String]]) {
-        lock.lock(); defer { lock.unlock() }
-        var list = load()
-        for f in found {
-            let type = f["type"] ?? "", ip = f["ip"] ?? ""
-            guard types.contains(type), isPrivateIp(ip) else { continue }
-            var name = cleanName(f["name"] ?? ""); let detail = cleanName(f["detail"] ?? "")
-            if name.isEmpty { name = ip }
-            if let i = list.firstIndex(where: { $0["type"] as? String == type && $0["ip"] as? String == ip }) {
-                if list[i]["custom"] as? Bool != true && list[i]["hidden"] as? Bool != true { list[i]["name"] = name; list[i]["detail"] = detail }
-            } else {
-                list.append(["type": type, "ip": ip, "name": name, "detail": detail, "custom": false, "hidden": false])
-            }
-        }
-        save(list)
-    }
-
-    static func run(_ v: String, _ type: String, _ ip: String, _ name: String) throws -> [[String: String]] {
-        lock.lock(); defer { lock.unlock() }
-        var list = load()
-        if v == "add" || v == "remove" {
-            guard types.contains(type) else { throw AppError("Device type not allowed.") }
-            try assertLocalIp(ip)
-            let i = list.firstIndex { $0["type"] as? String == type && $0["ip"] as? String == ip }
-            if v == "add" {
-                var n = cleanName(name); if n.isEmpty { n = ip }
-                if let i { list[i]["name"] = n; list[i]["custom"] = true; list[i]["hidden"] = false }
-                else { list.append(["type": type, "ip": ip, "name": n, "detail": "", "custom": true, "hidden": false]) }
-            } else if let i {
-                list[i]["hidden"] = true
-            }
-            save(list)
-        } else if v != "list" {
-            throw AppError("Command not allowed.")
-        }
-        return list.filter { $0["hidden"] as? Bool != true }
-            .map { ["type": $0["type"] as? String ?? "", "ip": $0["ip"] as? String ?? "", "name": $0["name"] as? String ?? "", "detail": $0["detail"] as? String ?? ""] }
-            .sorted { $0["type"]! != $1["type"]! ? $0["type"]! < $1["type"]! : ipLess($0["ip"]!, $1["ip"]!) }
-    }
-}
-
 // MARK: - Network tools (/net)
 
 enum NetTools {
@@ -197,6 +134,29 @@ enum NetTools {
 
     /// Pings every address and knocks on a few common ports (some devices ignore ping), then lists what answered.
     /// iOS does not let apps read MAC addresses, so those columns stay empty.
+    struct Host: Identifiable, Hashable { let ip: String; let name: String; let ping: Double?; var id: String { ip } }
+
+    static func hosts() async -> [Host] {
+        let ips = LowNet.subnetIps()
+        if ips.isEmpty { return [] }
+        async let pings = (try? await blocking { LowNet.icmpSweep(ips, waitMs: 2000) }) ?? [:]
+        let knock: [UInt16] = [80, 443, 22, 445, 7000, 8080, 62078, 1400, 8060, 8008]
+        let sweep = (try? await blocking { LowNet.tcpSweep(ips.flatMap { ip in knock.map { (ip, $0) } }, timeoutMs: 2000) }) ?? LowNet.SweepResult()
+        let pingRes = await pings
+        var alive = sweep.alive
+        for ip in pingRes.keys { alive.insert(ip) }
+        let mine = Set(LowNet.localAddrs())
+        let sorted = alive.filter { isPrivateIp($0) && !$0.hasSuffix(".255") }.sorted(by: ipLess)
+        var names: [String: String] = [:]
+        await withTaskGroup(of: (String, String).self) { g in
+            for ip in sorted { g.addTask { (ip, (try? await blocking { LowNet.hostName(ip) }) ?? "") } }
+            for await (ip, h) in g { names[ip] = h }
+        }
+        return sorted.map { ip in
+            Host(ip: ip, name: mine.contains(ip) ? "This iPhone" : (names[ip] ?? ""), ping: pingRes[ip])
+        }
+    }
+
     static func devices() async throws -> String {
         let ips = LowNet.subnetIps()
         if ips.isEmpty { return "[]" }
