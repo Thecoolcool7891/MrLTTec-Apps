@@ -10,6 +10,15 @@
     {
       "versions": [
         {
+          "version": "1.0.8",
+          "buildVersion": "8",
+          "date": "2026-11-14T22:15:21Z",
+          "localizedDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.8/BuzzLab-1.0.8.ipa",
+          "size": 358477,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.4",
           "buildVersion": "4",
           "date": "2026-11-14T21:29:32Z",
@@ -41,14 +50,23 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.4",
-      "versionDate": "2026-11-14T21:29:32Z",
+      "version": "1.0.8",
+      "versionDate": "2026-11-14T22:15:21Z",
       "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.4/BuzzLab-1.0.4.ipa",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.8/BuzzLab-1.0.8.ipa",
       "size": 358477
     },
     {
       "versions": [
+        {
+          "version": "2.0.8",
+          "buildVersion": "8",
+          "date": "2026-11-14T22:15:22Z",
+          "localizedDescription": "MrLTTec Home: in-app updater (checks the source, downloads the IPA, opens it in your signer)",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.8/SmartHome-2.0.8.ipa",
+          "size": 914311,
+          "minOSVersion": "26.0"
+        },
         {
           "version": "2.0.7",
           "buildVersion": "7",
@@ -92,11 +110,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.7",
-      "versionDate": "2026-11-14T22:02:44Z",
-      "versionDescription": "MrLTTec Home: rename WiZ Scene type that clashed with SwiftUI.Scene",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.7/SmartHome-2.0.7.ipa",
-      "size": 857339
+      "version": "2.0.8",
+      "versionDate": "2026-11-14T22:15:22Z",
+      "versionDescription": "MrLTTec Home: in-app updater (checks the source, downloads the IPA, opens it in your signer)",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.8/SmartHome-2.0.8.ipa",
+      "size": 914311
     }
   ],
   "news": []
