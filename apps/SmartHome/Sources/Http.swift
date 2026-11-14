@@ -32,6 +32,10 @@ final class Http: NSObject, URLSessionDelegate {
         let data: Data
         let status: Int
         let contentType: String
+        var headers: [AnyHashable: Any] = [:]
+        func header(_ name: String) -> String? {
+            headers.first { ($0.key as? String)?.caseInsensitiveCompare(name) == .orderedSame }?.value as? String
+        }
         var text: String { String(decoding: data, as: UTF8.self) }
     }
 
@@ -57,7 +61,7 @@ final class Http: NSObject, URLSessionDelegate {
             if let m = text.firstMatch(of: #/<errorCode>(\d+)</errorCode>/#) { detail = " (UPnP error \(m.1))" }
             throw HttpStatusError(status: code, body: data, message: "The device returned HTTP \(code)\(detail).")
         }
-        return Result(data: data, status: code, contentType: ct)
+        return Result(data: data, status: code, contentType: ct, headers: h?.allHeaderFields ?? [:])
     }
 
     static func json(_ url: String, timeout: Double = 3) async throws -> [String: Any] {

@@ -27,6 +27,14 @@ struct ToolsView: View {
                     }
                 }
 
+                Section {
+                    NavigationLink { CastView() } label: {
+                        Label("Cast to a TV or speaker", systemImage: "airplayvideo")
+                    }
+                } footer: {
+                    Text("Send YouTube links, photos, videos and music from this iPhone to Chromecasts, DLNA TVs and speakers, and AirPlay devices.")
+                }
+
                 Section("Ping") {
                     TextField("IP address", text: $pingIp).keyboardType(.decimalPad)
                     Button("Ping 4 times") { go { try await NetTools.run("ping", pingIp.trimmed, "") } }
