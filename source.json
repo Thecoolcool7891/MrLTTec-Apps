@@ -3,9 +3,41 @@
   "identifier": "com.mrlttec.apps",
   "subtitle": "Apps by MrLTTec",
   "description": "Every app MrLTTec builds, updated automatically.",
-  "iconURL": "",
-  "website": "",
+  "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/icon.png",
+  "website": "https://github.com/Thecoolcool7891/MrLTTec-Apps",
   "tintColor": "#FF8C00",
-  "apps": [],
+  "apps": [
+    {
+      "versions": [
+        {
+          "version": "1.0.1",
+          "buildVersion": "1",
+          "date": "2026-11-14T17:57:29Z",
+          "localizedDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.1/BuzzLab-1.0.1.ipa",
+          "size": 358477,
+          "minOSVersion": "26.0"
+        }
+      ],
+      "name": "Buzz Lab",
+      "bundleIdentifier": "com.mrlttec.buzzlab",
+      "developerName": "MrLTTec",
+      "subtitle": "Play with your iPhone's vibrations.",
+      "localizedDescription": "Buzz Lab is a playground for your iPhone's Taptic Engine. Tap through Apple's built-in haptics, try 12 custom vibration patterns like Heartbeat, Drumroll, SOS and Earthquake, or drag around the Touch Pad to control a live rumble.",
+      "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/apps/BuzzLab/icon.png",
+      "tintColor": "#FF8C00",
+      "category": "utilities",
+      "screenshots": [],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {}
+      },
+      "version": "1.0.1",
+      "versionDate": "2026-11-14T17:57:29Z",
+      "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.1/BuzzLab-1.0.1.ipa",
+      "size": 358477
+    }
+  ],
   "news": []
 }
