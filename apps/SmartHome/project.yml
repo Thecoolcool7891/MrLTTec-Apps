@@ -15,6 +15,7 @@ targets:
     platform: iOS
     sources:
       - path: Sources
+      - path: ../../shared
     scheme: {}
     info:
       path: Sources/Info.plist

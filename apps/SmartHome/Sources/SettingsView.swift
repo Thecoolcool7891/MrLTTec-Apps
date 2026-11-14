@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var store: DeviceStore
+    @EnvironmentObject var updater: Updater
     @AppStorage("appearance") private var appearance = "dark"
     @AppStorage("haptics") private var haptics = true
     @State private var confirmClear = false
@@ -29,8 +30,11 @@ struct SettingsView: View {
                     Text("Everything stays on this iPhone. Nothing is sent anywhere except to the devices you control.")
                 }
 
+                Section("Updates") {
+                    UpdateSettingsRow(updater: updater)
+                }
+
                 Section("About") {
-                    LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")
                     LabeledContent("Made by", value: "MrLTTec")
                     Text("Controls Sonos, Roku, Samsung TVs, Wemo, WLED, WiZ and Xbox on any Wi-Fi. No account or internet needed.")
                         .font(.footnote).foregroundStyle(.secondary)

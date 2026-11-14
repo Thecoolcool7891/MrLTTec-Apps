@@ -3,7 +3,7 @@ name: Build & publish apps
 on:
   push:
     branches: [main]
-    paths: ["apps/**", "scripts/**", ".github/workflows/**"]
+    paths: ["apps/**", "scripts/**", "shared/**", ".github/workflows/**"]
   workflow_dispatch:
     inputs:
       app:
@@ -47,7 +47,7 @@ jobs:
             APPS=$(ls apps)
           else
             CHANGED=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
-            if echo "$CHANGED" | grep -qE '^scripts/'; then
+            if echo "$CHANGED" | grep -qE '^(scripts|shared)/'; then
               APPS=$(ls apps)
             else
               APPS=$(echo "$CHANGED" | grep '^apps/' | cut -d/ -f2 | sort -u || true)

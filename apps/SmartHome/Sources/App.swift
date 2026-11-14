@@ -22,6 +22,7 @@ enum AppTab: Hashable { case devices, discover, tools, settings }
 struct RootView: View {
     @EnvironmentObject var store: DeviceStore
     @State private var tab: AppTab = .devices
+    @StateObject private var updater = Updater(bundleId: "com.mrlttec.smarthome")
     @Environment(\.scenePhase) private var phase
 
     var body: some View {
@@ -40,7 +41,9 @@ struct RootView: View {
             }
         }
         .tabBarMinimizeBehavior(.onScrollDown)
+        .environmentObject(updater)
+        .task { await updater.check() }
         .onChange(of: tab) { _, _ in Haptic.tap() }
-        .onChange(of: phase) { _, p in if p == .active { store.refreshNetwork() } }
+        .onChange(of: phase) { _, p in if p == .active { store.refreshNetwork(); Task { await updater.check() } } }
     }
 }

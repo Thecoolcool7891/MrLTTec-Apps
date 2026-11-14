@@ -3,6 +3,7 @@ import SwiftUI
 struct DevicesView: View {
     @Binding var tab: AppTab
     @EnvironmentObject var store: DeviceStore
+    @EnvironmentObject var updater: Updater
     @StateObject private var runner = Runner()
     @State private var showAdd = false
     @State private var renaming: Device?
@@ -14,6 +15,7 @@ struct DevicesView: View {
         NavigationStack {
             List {
                 Section {
+                    if updater.available != nil { UpdateBanner(updater: updater).padding(.bottom, 10) }
                     NetworkCard(addrs: store.localAddrs, count: store.here.count)
                 }
                 .listRowBackground(Color.clear)
