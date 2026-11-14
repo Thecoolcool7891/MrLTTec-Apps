@@ -150,7 +150,7 @@ struct WizLightView: View {
                 Section("Scenes") {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(WizScenes.all.map { Scene(id: $0.0, name: $0.1) }) { s in
+                            ForEach(WizScenes.all.map { WizScene(id: $0.0, name: $0.1) }) { s in
                                 Button(s.name) { send("scene\(s.id)", done: "Scene: \(s.name)") { on = true } }
                                     .buttonStyle(.bordered)
                             }
@@ -197,7 +197,7 @@ struct WizLightView: View {
     }
 }
 
-struct Scene: Identifiable { let id: Int; let name: String }
+struct WizScene: Identifiable { let id: Int; let name: String }
 
 // MARK: - WLED
 
