@@ -50,6 +50,15 @@
     {
       "versions": [
         {
+          "version": "2.0.7",
+          "buildVersion": "7",
+          "date": "2026-11-14T22:02:44Z",
+          "localizedDescription": "MrLTTec Home: rename WiZ Scene type that clashed with SwiftUI.Scene",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.7/SmartHome-2.0.7.ipa",
+          "size": 857339,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.4",
           "buildVersion": "4",
           "date": "2026-11-14T21:29:32Z",
@@ -72,7 +81,7 @@
       "bundleIdentifier": "com.mrlttec.smarthome",
       "developerName": "MrLTTec",
       "subtitle": "Control the TVs, speakers and lights on any Wi-Fi.",
-      "localizedDescription": "The MrLTTec Smart Home Tool, now on your iPhone. Join any Wi-Fi, tap Discover, and control what is on that network: Sonos speakers, Roku, Samsung TVs, Wemo plugs, WLED strips, WiZ lights and outlets, and turning on an Xbox. Includes network tools: list every device, ping, and check ports. No PC, server or internet needed.",
+      "localizedDescription": "A take-anywhere smart home tool. Join any Wi-Fi, tap Discover, and control what's on that network: Sonos (now playing, volume, EQ, grouping, favorites, sleep timer), Roku and Samsung TV remotes with apps and typing, WiZ lights (color, white, scenes), WLED strips (color, effects), Wemo and WiZ plugs, and turning on an Xbox. Includes network tools: every device on the network, ping, port checks and Wake-on-LAN. No account, PC or internet needed.",
       "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/apps/SmartHome/icon.png",
       "tintColor": "#8B5E3C",
       "category": "utilities",
@@ -83,11 +92,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "1.0.4",
-      "versionDate": "2026-11-14T21:29:32Z",
-      "versionDescription": "MrLTTec Home: add T badge to the app icon",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v1.0.4/SmartHome-1.0.4.ipa",
-      "size": 389082
+      "version": "2.0.7",
+      "versionDate": "2026-11-14T22:02:44Z",
+      "versionDescription": "MrLTTec Home: rename WiZ Scene type that clashed with SwiftUI.Scene",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.7/SmartHome-2.0.7.ipa",
+      "size": 857339
     }
   ],
   "news": []
