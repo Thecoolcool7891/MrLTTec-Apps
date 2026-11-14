@@ -32,8 +32,8 @@ final class Updater: ObservableObject {
             var api = URLRequest(url: Self.apiURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
             api.setValue("application/vnd.github.raw+json", forHTTPHeaderField: "Accept")
             var data: Data
-            if let (d, r) = try? await URLSession.shared.data(for: api), (r as? HTTPURLResponse)?.statusCode == 200 {
-                data = d
+            if let res = try? await URLSession.shared.data(for: api), (res.1 as? HTTPURLResponse)?.statusCode == 200 {
+                data = res.0
             } else {
                 var req = URLRequest(url: Self.sourceURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 15)
                 req.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
