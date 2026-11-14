@@ -31,8 +31,11 @@ struct ToolsView: View {
                     NavigationLink { CastView() } label: {
                         Label("Cast to a TV or speaker", systemImage: "airplayvideo")
                     }
+                    NavigationLink { BrowserMirrorView() } label: {
+                        Label("Watch my screen in a web browser", systemImage: "safari")
+                    }
                 } footer: {
-                    Text("Send YouTube links, photos, videos and music from this iPhone to Chromecasts, DLNA TVs and speakers, and AirPlay devices.")
+                    Text("Send YouTube links, photos, videos, music or your whole screen to Chromecasts, DLNA TVs and speakers, and AirPlay devices, or show your screen in any web browser.")
                 }
 
                 Section("Ping") {

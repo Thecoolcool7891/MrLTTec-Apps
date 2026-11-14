@@ -105,8 +105,8 @@ struct CastTargetView: View {
                 } header: { Text("YouTube") }
             }
 
-            if !target.avt.isEmpty && !target.music {
-                MirrorSection(target: target, runner: runner)
+            if !target.music && !target.methods.isEmpty {
+                MirrorSection(target: target, method: method.isEmpty ? (target.methods.first ?? "dlna") : method, runner: runner)
             }
 
             if target.air {

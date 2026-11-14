@@ -181,7 +181,7 @@ enum Cast {
     }
 
     /// Plays a URL with the built-in Default Media Receiver (CC1AD845).
-    static func load(_ ip: String, url: URL, type: String) async throws {
+    static func load(_ ip: String, url: URL, type: String, live: Bool = false) async throws {
         let s = try await session(ip); defer { s.close() }
         let st = try await s.status()
         func app(_ status: [String: Any]) -> [String: Any]? {
@@ -197,7 +197,7 @@ enum Cast {
         let tid = cur?["transportId"] as? String ?? ""
         try await s.send(tid, CastSession.connNs, "{\"type\":\"CONNECT\"}")
         try await s.request(tid, CastSession.media, ["type": "LOAD", "sessionId": cur?["sessionId"] as? String ?? "", "autoplay": true, "currentTime": 0,
-                                                       "media": ["contentId": url.absoluteString, "contentType": type, "streamType": "BUFFERED"]])
+                                                       "media": ["contentId": url.absoluteString, "contentType": type, "streamType": live ? "LIVE" : "BUFFERED"]])
         let r = await s.wait(12) { j in
             let t = j["type"] as? String ?? ""
             return (t == "MEDIA_STATUS" && !((j["status"] as? [Any]) ?? []).isEmpty) || t == "LOAD_FAILED" || t == "INVALID_REQUEST"
