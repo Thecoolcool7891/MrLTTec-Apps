@@ -3,15 +3,28 @@ import ReplayKit
 import CoreImage.CIFilterBuiltins
 
 /// iOS's own "Start Broadcast" button, pointed at the MrLTTec Mirror extension.
+/// The system button doesn't center itself, so it's stretched to fill this view with its icon in the middle.
+final class CenteredBroadcastPicker: RPSystemBroadcastPickerView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        for case let b as UIButton in subviews {
+            b.frame = bounds
+            b.contentHorizontalAlignment = .center
+            b.contentVerticalAlignment = .center
+            b.imageView?.contentMode = .center
+            b.imageView?.tintColor = UIColor(Theme.gold)
+        }
+    }
+}
+
 struct BroadcastButton: UIViewRepresentable {
-    func makeUIView(context: Context) -> RPSystemBroadcastPickerView {
-        let v = RPSystemBroadcastPickerView(frame: CGRect(x: 0, y: 0, width: 56, height: 56))
+    func makeUIView(context: Context) -> CenteredBroadcastPicker {
+        let v = CenteredBroadcastPicker(frame: CGRect(x: 0, y: 0, width: 56, height: 56))
         v.preferredExtension = (Bundle.main.bundleIdentifier ?? "com.mrlttec.smarthome") + ".ScreenBroadcast"
         v.showsMicrophoneButton = false
-        for case let b as UIButton in v.subviews { b.imageView?.tintColor = UIColor(Theme.gold) }
         return v
     }
-    func updateUIView(_ uiView: RPSystemBroadcastPickerView, context: Context) {}
+    func updateUIView(_ uiView: CenteredBroadcastPicker, context: Context) { uiView.setNeedsLayout() }
 }
 
 enum Mirror {
