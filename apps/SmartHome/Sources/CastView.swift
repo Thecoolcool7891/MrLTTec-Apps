@@ -81,6 +81,9 @@ struct CastTargetView: View {
     @State private var photoItem: PhotosPickerItem?
     @State private var importing = false
     @State private var nowSending = ""
+    @State private var apPaired = false
+    @State private var apPinShown = false
+    @State private var apPin = ""
 
     var body: some View {
         Form {
@@ -100,6 +103,41 @@ struct CastTargetView: View {
                     }
                     .buttonStyle(.borderless)
                 } header: { Text("YouTube") }
+            }
+
+            if target.air {
+                Section {
+                    if apPaired {
+                        Label("Paired: photos, videos and music work", systemImage: "checkmark.seal.fill").foregroundStyle(.green)
+                        Button("Pair again", role: .destructive) { AirPlay2.shared.forget(target.ip); apPaired = false }
+                    } else if !apPinShown {
+                        Button {
+                            Task {
+                                if await runner.run("Check the TV for the PIN", { try await AirPlay2.shared.startPairing(target.ip); return "" }) != nil {
+                                    withAnimation { apPinShown = true }
+                                }
+                            }
+                        } label: { Label("Start AirPlay pairing", systemImage: "lock.open.display") }
+                    } else {
+                        HStack {
+                            TextField("PIN on the TV", text: $apPin).keyboardType(.numberPad)
+                            Button("Pair") {
+                                let p = apPin.trimmed
+                                Task {
+                                    if await runner.run("Paired", { try await AirPlay2.shared.finishPairing(target.ip, pin: p); return "" }) != nil {
+                                        withAnimation { apPaired = true }; Haptic.success()
+                                    }
+                                    apPinShown = false; apPin = ""
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+                } header: {
+                    Text("AirPlay")
+                } footer: {
+                    Text(apPaired ? "" : "Apple TVs and newer AirPlay TVs need a one-time pairing. The TV shows a PIN.")
+                }
             }
 
             if !target.methods.isEmpty {
@@ -151,7 +189,11 @@ struct CastTargetView: View {
         .navigationTitle(target.name)
         .navigationBarTitleDisplayMode(.inline)
         .notes(runner)
-        .onAppear { if method.isEmpty { method = target.methods.first ?? "" } }
+        .onAppear {
+            if method.isEmpty { method = target.methods.first ?? "" }
+            apPaired = AirPlay2.isPaired(target.ip)
+            if apPaired && target.air && !target.cast { method = "airplay" }
+        }
         .onChange(of: photoItem) { _, item in if let item { Task { await sendPhotoItem(item) } } }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.audio, .movie, .image]) { r in
             if case .success(let u) = r { Task { await sendFile(u) } }
@@ -182,8 +224,14 @@ struct CastTargetView: View {
         let dst = FileManager.default.temporaryDirectory.appendingPathComponent("cast-" + u.lastPathComponent)
         try? FileManager.default.removeItem(at: dst)
         do { try FileManager.default.copyItem(at: u, to: dst) } catch { runner.show("Couldn't open that file.", error: true); return }
-        let type = UTType(filenameExtension: u.pathExtension)?.preferredMIMEType ?? "application/octet-stream"
-        await send(dst, type: type)
+        var type = UTType(filenameExtension: u.pathExtension)?.preferredMIMEType ?? "application/octet-stream"
+        var file = dst
+        if type.hasPrefix("image/") && type != "image/jpeg", let img = UIImage(contentsOfFile: dst.path), let jpg = img.jpegData(compressionQuality: 0.9) {
+            file = dst.deletingPathExtension().appendingPathExtension("jpg")
+            try? jpg.write(to: file)
+            type = "image/jpeg"
+        }
+        await send(file, type: type)
     }
 
     private func send(_ file: URL, type: String) async {
@@ -194,8 +242,13 @@ struct CastTargetView: View {
             switch m {
             case "cast": try await Cast.load(target.ip, url: url, type: type)
             case "airplay":
-                if type.hasPrefix("image/") { throw AppError("Photos aren't supported over AirPlay here. Use a video or music file.") }
-                try await AirPlay1.run(target.ip, "load", url: url)
+                if AirPlay2.isPaired(target.ip) {
+                    if type.hasPrefix("image/") { try await AirPlay2.shared.showPhoto(target.ip, jpeg: try Data(contentsOf: file)) }
+                    else { try await AirPlay2.shared.playURL(target.ip, url) }
+                } else {
+                    if type.hasPrefix("image/") { throw AppError("Photos over AirPlay need pairing. Tap Start AirPlay pairing above.") }
+                    try await AirPlay1.run(target.ip, "load", url: url)
+                }
             default: try await Dlna.play(target.avt, url: url, type: type, title: file.lastPathComponent)
             }
             return ""
@@ -208,7 +261,9 @@ struct CastTargetView: View {
         runner.fire {
             switch m {
             case "cast": try await Cast.control(target.ip, v)
-            case "airplay": try await AirPlay1.run(target.ip, v)
+            case "airplay":
+                if AirPlay2.isPaired(target.ip) { try await AirPlay2.shared.control(target.ip, v) }
+                else { try await AirPlay1.run(target.ip, v) }
             default:
                 if v == "stop" { try await Dlna.call(target.avt, "Stop", "") }
                 else if v == "pause" { try await Dlna.call(target.avt, "Pause", "") }

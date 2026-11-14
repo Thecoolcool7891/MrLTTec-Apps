@@ -113,6 +113,15 @@ struct AppleTVView: View {
                     }
                 }
 
+                Card("Photos and videos") {
+                    NavigationLink {
+                        CastTargetView(target: CastTarget(ip: device.ip, name: device.name, air: true))
+                    } label: {
+                        HStack { Label("Show photos and videos on this TV", systemImage: "airplayvideo"); Spacer(); Image(systemName: "chevron.right").foregroundStyle(.secondary) }
+                    }
+                    .foregroundStyle(.primary)
+                }
+
                 Card("More buttons") {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
                         ForEach([["Play", "m:play"], ["Pause", "m:pause"], ["Screensaver", "screensaver"], ["Guide", "guide"],
