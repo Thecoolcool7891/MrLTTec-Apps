@@ -10,6 +10,15 @@
     {
       "versions": [
         {
+          "version": "1.0.12",
+          "buildVersion": "12",
+          "date": "2026-11-14T22:37:31Z",
+          "localizedDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.12/BuzzLab-1.0.12.ipa",
+          "size": 358480,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.11",
           "buildVersion": "11",
           "date": "2026-11-14T22:36:04Z",
@@ -59,14 +68,23 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.11",
-      "versionDate": "2026-11-14T22:36:04Z",
+      "version": "1.0.12",
+      "versionDate": "2026-11-14T22:37:31Z",
       "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.11/BuzzLab-1.0.11.ipa",
-      "size": 358479
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.12/BuzzLab-1.0.12.ipa",
+      "size": 358480
     },
     {
       "versions": [
+        {
+          "version": "2.0.12",
+          "buildVersion": "12",
+          "date": "2026-11-14T22:37:31Z",
+          "localizedDescription": "MrLTTec Home: Android/Fire TV over ADB, Apple TV pairing and remote, faster update check",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.12/SmartHome-2.0.12.ipa",
+          "size": 1272830,
+          "minOSVersion": "26.0"
+        },
         {
           "version": "2.0.11",
           "buildVersion": "11",
@@ -146,11 +164,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.11",
-      "versionDate": "2026-11-14T22:36:04Z",
+      "version": "2.0.12",
+      "versionDate": "2026-11-14T22:37:31Z",
       "versionDescription": "MrLTTec Home: Android/Fire TV over ADB, Apple TV pairing and remote, faster update check",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.11/SmartHome-2.0.11.ipa",
-      "size": 1272808
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.12/SmartHome-2.0.12.ipa",
+      "size": 1272830
     }
   ],
   "news": []
