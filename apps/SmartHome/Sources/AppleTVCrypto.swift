@@ -101,7 +101,10 @@ struct Montgomery {
 
     static func geq(_ a: [UInt32], _ n: [UInt32]) -> Bool {
         if a.count > n.count, a[n.count...].contains(where: { $0 != 0 }) { return true }
-        for i in stride(from: n.count - 1, through: 0, by: -1) where a[i] != n[i] { return a[i] > n[i] }
+        for i in stride(from: n.count - 1, through: 0, by: -1) {
+            let x = i < a.count ? a[i] : 0
+            if x != n[i] { return x > n[i] }
+        }
         return true
     }
     static func subIn(_ a: inout [UInt32], _ n: [UInt32]) {
