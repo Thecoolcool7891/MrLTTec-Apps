@@ -55,6 +55,9 @@ final class AppModel: ObservableObject {
     @Published var pcStatsAt = Date.distantPast
     @Published var pcStatsError = ""
     @Published var showBrightness = false
+    /// Fire TV direct: at home, remote buttons go from the phone straight to the TV over ADB (paired in Settings).
+    @Published var tvDirect = UserDefaults.standard.bool(forKey: "tvDirect")
+    @Published var tvPairing = false
     /// After an optimistic change, ignore polled state for a moment so the screen doesn't jump back.
     var msHold = Date.distantPast
 
@@ -284,7 +287,8 @@ final class AppModel: ObservableObject {
         }
         Task {
             do {
-                try await API.key(k)
+                let direct = await viaTV({ try await TVAdb.shared.key(API.tvIp, k) })
+                if !direct { try await API.key(k) }
                 try? await Task.sleep(nanoseconds: 900_000_000)
                 await refreshNowPlaying()
             } catch { say(error.localizedDescription, bad: true) }

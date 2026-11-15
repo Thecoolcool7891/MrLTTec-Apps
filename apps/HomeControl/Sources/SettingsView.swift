@@ -108,6 +108,29 @@ struct SettingsView: View {
                 .padding(.horizontal, 12)
 
                 VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        IconBox(symbol: "bolt.horizontal")
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text("Fast TV buttons").font(.system(size: 15, weight: .semibold)).foregroundStyle(Tan.text)
+                            Text(m.tvPairing ? "Press OK on the TV..." : m.tvDirect ? "At home, buttons go straight to the TV" : "Buttons go through the mini PC")
+                                .font(.system(size: 12)).foregroundStyle(Tan.muted)
+                        }
+                        Spacer(minLength: 6)
+                        if m.tvPairing {
+                            ProgressView().tint(Tan.brown)
+                        } else {
+                            TanSwitch(on: m.tvDirect) { m.setTVDirect(!m.tvDirect) }
+                        }
+                    }
+                    if !m.tvDirect && !m.tvPairing {
+                        Text("Turn on at home: the TV asks \"Allow USB debugging?\" once. Tick \"Always allow\" and press OK with the TV remote.")
+                            .font(.system(size: 11)).foregroundStyle(Tan.faint)
+                    }
+                }
+                .tanCard()
+                .padding(.horizontal, 12)
+
+                VStack(alignment: .leading, spacing: 10) {
                     UpdateSettingsRow(updater: updater)
                 }
                 .foregroundStyle(Tan.text)

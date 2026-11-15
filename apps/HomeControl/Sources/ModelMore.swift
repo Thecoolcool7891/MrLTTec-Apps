@@ -120,6 +120,53 @@ extension AppModel {
         }
     }
 
+    // MARK: Fire TV direct (ADB from the phone, home Wi-Fi only)
+
+    /// Runs `work` straight on the TV when paired and on the home Wi-Fi. False = use the mini PC instead.
+    func viaTV(_ work: () async throws -> Void) async -> Bool {
+        guard tvDirect, onWifi else { return false }
+        do {
+            try await work()
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /// One time: the TV asks "Allow USB debugging?" for this iPhone.
+    func pairTV() {
+        guard onWifi else {
+            say("Join the home Wi-Fi first, then pair.", bad: true)
+            return
+        }
+        Haptic.tap()
+        tvPairing = true
+        TVAdb.shared.allowPairing = true
+        say("Look at the TV: tick \"Always allow\" and press OK.")
+        Task {
+            do {
+                _ = try await TVAdb.shared.shell(API.tvIp, "echo ok")
+                UserDefaults.standard.set(true, forKey: "tvDirect")
+                tvDirect = true
+                say("Paired. At home, buttons now go straight to the TV.")
+            } catch {
+                say(error.localizedDescription, bad: true)
+            }
+            TVAdb.shared.allowPairing = false
+            tvPairing = false
+        }
+    }
+
+    func setTVDirect(_ on: Bool) {
+        Haptic.tap()
+        if on {
+            pairTV()
+        } else {
+            UserDefaults.standard.set(false, forKey: "tvDirect")
+            tvDirect = false
+        }
+    }
+
     // MARK: TV extras
 
     func openApp(_ package: String, _ name: String) {
@@ -128,7 +175,8 @@ extension AppModel {
         if !tvOn { np?.power = "on" }
         Task {
             do {
-                try await API.adb("app", package, timeout: 30)
+                let direct = await viaTV({ try await TVAdb.shared.launch(API.tvIp, package) })
+                if !direct { try await API.adb("app", package, timeout: 30) }
                 try? await Task.sleep(nanoseconds: 1_500_000_000)
                 await refreshNowPlaying()
             } catch { say(error.localizedDescription, bad: true) }
@@ -147,7 +195,8 @@ extension AppModel {
         let s = String(t)
         Task {
             do {
-                try await API.adb("text", s, timeout: 20)
+                let direct = await viaTV({ try await TVAdb.shared.text(API.tvIp, s) })
+                if !direct { try await API.adb("text", s, timeout: 20) }
                 say("Typed on the TV.")
             } catch { say(error.localizedDescription, bad: true) }
         }
