@@ -86,6 +86,15 @@
     {
       "versions": [
         {
+          "version": "2.0.20",
+          "buildVersion": "20",
+          "date": "2026-11-15T00:28:35Z",
+          "localizedDescription": "Mirror quality presets, low lag, viewer count; Report a problem; Network health check",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.20/SmartHome-2.0.20.ipa",
+          "size": 1635762,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "2.0.19",
           "buildVersion": "19",
           "date": "2026-11-15T00:14:15Z",
@@ -165,15 +174,6 @@
           "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.11/SmartHome-2.0.11.ipa",
           "size": 1272808,
           "minOSVersion": "26.0"
-        },
-        {
-          "version": "2.0.10",
-          "buildVersion": "10",
-          "date": "2026-11-14T22:29:02Z",
-          "localizedDescription": "MrLTTec Home: Cast to TVs and speakers (Google Cast, DLNA, YouTube over DIAL, AirPlay) with a phone media server",
-          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.10/SmartHome-2.0.10.ipa",
-          "size": 1093184,
-          "minOSVersion": "26.0"
         }
       ],
       "name": "MrLTTec Home",
@@ -191,11 +191,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.19",
-      "versionDate": "2026-11-15T00:14:15Z",
-      "versionDescription": "Broadcast button: draw our own centered icon, keep the system button invisible on top for taps",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.19/SmartHome-2.0.19.ipa",
-      "size": 1576004
+      "version": "2.0.20",
+      "versionDate": "2026-11-15T00:28:35Z",
+      "versionDescription": "Mirror quality presets, low lag, viewer count; Report a problem; Network health check",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.20/SmartHome-2.0.20.ipa",
+      "size": 1635762
     }
   ],
   "news": []
