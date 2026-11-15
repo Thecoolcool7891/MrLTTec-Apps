@@ -3,7 +3,7 @@ name: Build & publish apps
 on:
   push:
     branches: [main]
-    paths: ["apps/**", "scripts/**", "shared/**", ".github/workflows/**"]
+    paths: ["apps/**", "scripts/**", "shared/**", "news/**", ".github/workflows/**"]
   workflow_dispatch:
     inputs:
       app:
@@ -70,13 +70,14 @@ jobs:
         run: |
           shopt -s nullglob
           files=("$RUNNER_TEMP"/updates/*.args)
-          if [ ${#files[@]} -eq 0 ]; then echo "Nothing built"; exit 0; fi
+          if [ ${#files[@]} -eq 0 ]; then echo "No apps built (news/source refresh only)"; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for attempt in 1 2 3 4 5; do
             git fetch -q origin main
             git reset -q --hard origin/main
             for f in "${files[@]}"; do eval "python3 scripts/update_source.py $(cat "$f")"; done
+            python3 news/apply_news.py
             git add source.json
             if git diff --cached --quiet; then echo "No changes"; exit 0; fi
             git commit -q -m "Update source.json"

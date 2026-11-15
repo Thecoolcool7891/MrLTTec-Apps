@@ -29,7 +29,8 @@ scripts/update_source.py adds the new version to source.json
 source.json             the AltStore source (written by the bot — don't hand-edit unless fixing it)
 ```
 
-Current apps: **BuzzLab** (haptics playground, `com.mrlttec.buzzlab`) and **SmartHome** = "MrLTTec Home" (`com.mrlttec.smarthome`).
+Current apps: **BuzzLab** (haptics playground, `com.mrlttec.buzzlab`), **SmartHome** = "MrLTTec Home" (`com.mrlttec.smarthome`)
+and **HomeControl** = "MrLTTec Control" (`com.mrlttec.homecontrol`, the owner's own room over Tailscale).
 
 ## Shipping a change
 
@@ -61,6 +62,14 @@ git checkout main && git pull && git merge my-feature && git push
 ### Pushing from Windows
 Git Credential Manager holds the GitHub login. If a push fails with "could not read Username", run `git push` once in an
 interactive terminal so the browser sign-in can pop up; after that pushes work non-interactively. `gh` CLI is not installed.
+
+## News (shows in the store's News tab)
+
+Edit `news/news.json` (newest can go anywhere; it's sorted by date) and put pictures in `news/images/` (about 1200×600 PNG).
+Fields are documented at the top of `news/apply_news.py`: `identifier` (unique, never reused), `title`, `caption`,
+`date` (ISO with time, e.g. `2026-11-15T19:30:00-05:00`), optional `image` (file name in news/images), `appID`, `url`,
+`tintColor`, `notify`. Push to main: the publish workflow copies it into `source.json` (no app rebuild) and re-uploads
+the uncached source. Don't hand-edit `news` inside source.json — it gets overwritten from news.json.
 
 ## Adding a new app
 
