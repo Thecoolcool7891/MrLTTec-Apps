@@ -140,6 +140,13 @@ struct ConnectView: View {
                 }
             }
             Spacer()
+            if m.connected == false && !m.lastError.isEmpty {
+                Text(m.lastError)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Tan.faint)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 30)
+            }
             Button("Server settings") {
                 draft = serverHost
                 editing = true

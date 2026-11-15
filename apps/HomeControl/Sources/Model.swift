@@ -42,6 +42,7 @@ final class AppModel: ObservableObject {
     @Published var lists: [Playlist] = []
     @Published var musicLoading = false
     @Published var musicError = ""
+    @Published var lastError = ""   // why the last connect failed (shown small on the Connect screen)
 
     private var fails = 0
     private var refreshing = false
@@ -62,8 +63,10 @@ final class AppModel: ObservableObject {
             status = try await API.status(timeout: 6)
             fails = 0
             withAnimation { connected = true }
+            lastError = ""
             await refresh()
         } catch {
+            lastError = error.localizedDescription
             withAnimation { connected = false }
         }
     }

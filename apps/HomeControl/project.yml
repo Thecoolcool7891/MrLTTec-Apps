@@ -31,9 +31,10 @@ targets:
           UIApplicationSupportsMultipleScenes: false
         UIUserInterfaceStyle: Light
         NSLocalNetworkUsageDescription: MrLTTec Control talks to the MrLTTec server through your Tailscale network.
+        # Plain http to the Tailscale address (100.x). Only NSAllowsArbitraryLoads: when NSAllowsLocalNetworking is
+        # also set, iOS ignores NSAllowsArbitraryLoads, and 100.x isn't "local", so http to it gets blocked.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-          NSAllowsLocalNetworking: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.mrlttec.homecontrol
