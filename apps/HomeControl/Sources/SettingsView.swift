@@ -1,9 +1,20 @@
 import SwiftUI
+import UIKit
 
 struct SettingsView: View {
     @EnvironmentObject var m: AppModel
     @EnvironmentObject var updater: Updater
     @AppStorage("serverHost") private var serverHost = ""
+    @AppStorage("volumeButtons") private var volumeButtons = true
+
+    private func openHomeApp() {
+        guard let u = URL(string: "mrlttechome://open") else { return }
+        UIApplication.shared.open(u) { ok in
+            if !ok {
+                Task { @MainActor in m.say("MrLTTec Home isn't installed. Get it from the MrLTTec source in Flare Store.", bad: true) }
+            }
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -49,6 +60,49 @@ struct SettingsView: View {
                             .background(Tan.brown, in: Capsule())
                     }
                     .buttonStyle(.plain)
+                }
+                .tanCard()
+                .padding(.horizontal, 12)
+
+                // Opens the other app (MrLTTec Home) for devices on whatever Wi-Fi the phone is on.
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Control the devices on the network").font(.system(size: 16, weight: .semibold)).foregroundStyle(Tan.text)
+                    Text("Use this app:").font(.system(size: 12)).foregroundStyle(Tan.muted)
+                    HStack(spacing: 12) {
+                        BundleIcon(file: "home-app.png", size: 48)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text("MrLTTec Home").font(.system(size: 15, weight: .semibold)).foregroundStyle(Tan.text)
+                            Text("TVs, speakers and lights on any Wi-Fi").font(.system(size: 12)).foregroundStyle(Tan.muted)
+                        }
+                        Spacer(minLength: 6)
+                        Button {
+                            Haptic.tap()
+                            openHomeApp()
+                        } label: {
+                            Text("Open")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(Tan.card)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Tan.brown, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .tanCard()
+                .padding(.horizontal, 12)
+
+                HStack(spacing: 10) {
+                    IconBox(symbol: "speaker.wave.2")
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Volume buttons control TV").font(.system(size: 15, weight: .semibold)).foregroundStyle(Tan.text)
+                        Text("While MrLTTec Control is open").font(.system(size: 12)).foregroundStyle(Tan.muted)
+                    }
+                    Spacer(minLength: 6)
+                    TanSwitch(on: volumeButtons) {
+                        Haptic.tap()
+                        volumeButtons.toggle()
+                    }
                 }
                 .tanCard()
                 .padding(.horizontal, 12)

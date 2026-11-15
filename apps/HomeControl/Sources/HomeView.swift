@@ -100,7 +100,7 @@ struct NowPlayingCard: View {
 
             HStack(spacing: 40) {
                 NPKey(symbol: "backward.fill", key: "rewind")
-                NPKey(symbol: m.isPlaying ? "pause.fill" : "play.fill", key: "playpause")
+                NPKey(symbol: m.musicPlaying ? "pause.fill" : "play.fill", key: "playpause")
                 NPKey(symbol: "forward.fill", key: "ffwd")
             }
             .frame(maxWidth: .infinity)
@@ -108,6 +108,11 @@ struct NowPlayingCard: View {
             .opacity(m.tvOn ? 1 : 0.4)
         }
         .tanCard()
+        .contentShape(Rectangle())
+        .onTapGesture {
+            Haptic.tap()
+            m.showNowPlaying = true
+        }
     }
 }
 
@@ -116,7 +121,14 @@ struct NPKey: View {
     let symbol: String
     let key: String
     var body: some View {
-        Button { m.key(key) } label: {
+        Button {
+            switch key {
+            case "playpause": m.togglePlay()
+            case "rewind": m.previousSong()
+            case "ffwd": m.nextSong()
+            default: m.key(key)
+            }
+        } label: {
             Image(systemName: symbol)
                 .font(.system(size: 24))
                 .foregroundStyle(Tan.chipText)
@@ -135,19 +147,24 @@ struct PCCard: View {
     var body: some View {
         let on = m.status?.pc?.on == true
         HStack(spacing: 10) {
-            IconBox(symbol: "desktopcomputer", size: 30)
+            IconBox(symbol: "desktopcomputer", size: 36)
             VStack(alignment: .leading, spacing: 1) {
                 Text("Gaming PC").font(.system(size: 15, weight: .semibold)).foregroundStyle(Tan.text)
                 Text(m.pcLine).font(.system(size: 11)).foregroundStyle(Tan.muted)
             }
             Spacer(minLength: 6)
-            FanButton(size: 30)
-            TanSwitch(on: on || m.pcWaking, scale: 0.8) {
+            FanButton(size: 36)
+            TanSwitch(on: on || m.pcWaking, scale: 0.92) {
                 if on { confirmSleep = true } else { m.pcPower(true) }
             }
             .padding(.leading, 4)
         }
-        .tanCard(padding: 12)
+        .tanCard(padding: 13)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            Haptic.tap()
+            m.showPC = true
+        }
         .confirmationDialog("Put the Gaming PC to sleep?", isPresented: $confirmSleep, titleVisibility: .visible) {
             Button("Sleep", role: .destructive) { m.pcPower(false) }
             Button("Cancel", role: .cancel) {}

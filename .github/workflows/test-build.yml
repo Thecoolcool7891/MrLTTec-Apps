@@ -23,12 +23,22 @@ jobs:
 
       - name: Build every app
         run: |
+          FAILED=""
           for DIR in apps/*/; do
             APP=$(basename "$DIR")
             SCHEME=$(python3 -c "import json; print(json.load(open('$DIR/app.json'))['scheme'])")
             echo "::group::$APP"
-            (cd "$DIR" && xcodegen generate && xcodebuild -project "$SCHEME.xcodeproj" -scheme "$SCHEME" -configuration Release \
-              -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
-              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build)
+            set +e
+            (cd "$DIR" && xcodegen generate && xcodebuild -project "$SCHEME.xcodeproj" -scheme "$SCHEME" -configuration Release               -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build               CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build) 2>&1 | tee "$RUNNER_TEMP/$APP.log"
+            CODE=${PIPESTATUS[0]}
+            set -e
             echo "::endgroup::"
+            if [ "$CODE" != "0" ]; then
+              FAILED="$FAILED $APP"
+              # Annotations can be read without signing in (check-runs/<job>/annotations), unlike the raw log.
+              grep -E "error:" "$RUNNER_TEMP/$APP.log" | sed -E "s#^.*/apps/#apps/#" | sort -u | head -40 | while IFS= read -r L; do
+                echo "::error::$APP: $L"
+              done
+            fi
           done
+          if [ -n "$FAILED" ]; then echo "::error::Failed:$FAILED"; exit 1; fi

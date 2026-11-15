@@ -26,7 +26,13 @@ xcodebuild \
   MARKETING_VERSION="$VERSION" \
   CURRENT_PROJECT_VERSION="$BUILD" \
   CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-  build
+  build 2>&1 | tee "$RUNNER_TEMP/build-$APP.log" || {
+    # Readable without signing in: GET /repos/{owner}/{repo}/check-runs/{job_id}/annotations
+    grep -E "error:" "$RUNNER_TEMP/build-$APP.log" | sed -E "s#^.*/apps/#apps/#" | sort -u | head -40 | while IFS= read -r L; do
+      echo "::error::$APP: $L"
+    done
+    exit 1
+  }
 rm -rf Payload && mkdir Payload
 cp -R "build/Build/Products/Release-iphoneos/$SCHEME.app" Payload/
 zip -qry "$IPA" Payload

@@ -17,7 +17,20 @@ struct RootView: View {
     @StateObject private var model = AppModel()
     @StateObject private var updater = Updater(bundleId: "com.mrlttec.homecontrol")
     @State private var tab: MainTab = .home
+    @StateObject private var volume = VolumeButtons()
+    @AppStorage("volumeButtons") private var volumeButtons = true
     @Environment(\.scenePhase) private var phase
+
+    private func updateVolumeButtons() {
+        if volumeButtons && phase == .active && model.connected == true {
+            volume.onPress = { [weak model] up in
+                Task { @MainActor in model?.key(up ? "volup" : "voldown") }
+            }
+            volume.start()
+        } else {
+            volume.stop()
+        }
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -40,6 +53,9 @@ struct RootView: View {
                 ConnectView().transition(.opacity)
             }
             ToastView()
+            if volumeButtons {
+                HiddenVolumeView(buttons: volume).frame(width: 1, height: 1).allowsHitTesting(false)
+            }
         }
         .environmentObject(model)
         .environmentObject(updater)
@@ -49,9 +65,24 @@ struct RootView: View {
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Tan.bg)
         }
+        .sheet(isPresented: $model.showNowPlaying) {
+            NowPlayingView()
+                .environmentObject(model)
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Tan.bg)
+        }
+        .sheet(isPresented: $model.showPC) {
+            PCStatsView()
+                .environmentObject(model)
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Tan.bg)
+        }
+        .onChange(of: volumeButtons) { _, _ in updateVolumeButtons() }
+        .onChange(of: model.connected) { _, _ in updateVolumeButtons() }
         .task { await model.run() }
         .task { await updater.check() }
         .onChange(of: phase) { _, p in
+            updateVolumeButtons()
             if p == .active {
                 Task { await model.connect() }
                 Task { await updater.check() }

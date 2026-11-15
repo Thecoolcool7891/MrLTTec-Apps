@@ -44,6 +44,18 @@ final class AppModel: ObservableObject {
     @Published var musicError = ""
     @Published var lastError = ""   // why the last connect failed (shown small on the Connect screen)
     @Published var onWifi = false   // true = talking to 10.0.0.187 on the home Wi-Fi, false = through Tailscale
+    // MrLTTec Music's own state (control port 8790): exact song, position, shuffle, repeat, volume
+    @Published var ms: MusicState?
+    @Published var msAt = Date()
+    @Published var queue: [MusicQueue.Item] = []
+    @Published var showNowPlaying = false
+    // Gaming PC page
+    @Published var showPC = false
+    @Published var pcStats: PCStats?
+    @Published var pcStatsAt = Date.distantPast
+    @Published var pcStatsError = ""
+    /// After an optimistic change, ignore polled state for a moment so the screen doesn't jump back.
+    var msHold = Date.distantPast
 
     private var fails = 0
     private var refreshing = false
@@ -101,6 +113,7 @@ final class AppModel: ObservableObject {
             onWifi = true
         }
         await refreshNowPlaying()
+        if musicOpen || ms != nil { await refreshMusic() }
         if status?.pc?.on == true {
             if let r = try? await API.main("/pc?v=rgb", timeout: 8), r == "on" || r == "off" { rgb = r }
         } else {
@@ -248,6 +261,7 @@ final class AppModel: ObservableObject {
     }
 
     var npArt: URL? {
+        if musicOpen, let a = ms?.art, !a.isEmpty { return API.fixHost(a) }
         guard !nowKey.isEmpty else { return nil }
         for l in lists {
             if let t = l.tracks.first(where: { $0.match == nowKey && $0.art != nil }) { return t.art }
@@ -255,10 +269,17 @@ final class AppModel: ObservableObject {
         return nil
     }
 
-    func isNow(_ t: Track) -> Bool { musicOpen && !nowKey.isEmpty && t.match == nowKey }
+    func isNow(_ t: Track) -> Bool {
+        guard musicOpen else { return false }
+        if let id = ms?.id, !id.isEmpty, !t.songId.isEmpty { return t.songId == id }
+        return !nowKey.isEmpty && t.match == nowKey
+    }
 
     func key(_ k: String) {
         Haptic.tap()
+        if k == "playpause", let st = np?.state, st == "playing" || st == "paused" {
+            np?.state = st == "playing" ? "paused" : "playing"
+        }
         Task {
             do {
                 try await API.key(k)
@@ -270,6 +291,8 @@ final class AppModel: ObservableObject {
 
     func tvPower(_ on: Bool) {
         Haptic.tap()
+        status?.tv?.on = on
+        np?.power = on ? "on" : "off"
         Task {
             do { try await API.post("/tv/power", ["on": on], timeout: 30); say(on ? "TV on." : "TV off.") }
             catch { say(error.localizedDescription, bad: true) }
@@ -309,14 +332,20 @@ final class AppModel: ObservableObject {
         guard !t.songId.isEmpty else { return }
         Haptic.tap()
         let arg = fav ? "\(t.songId):\(t.n - 1)" : t.songId
-        say("Playing \(t.title) on the TV...")
+        // Show it right away; the TV catches up.
+        var s = ms ?? MusicState()
+        s.id = t.songId; s.title = t.title; s.artist = t.artist; s.playing = true; s.positionMs = 0
+        s.art = t.art?.absoluteString ?? s.art
+        ms = s; msAt = Date(); msHold = Date().addingTimeInterval(2.5)
+        np?.app = musicPackage; np?.power = "on"; np?.state = "playing"; np?.title = t.title
+        nowKey = t.match
         Task {
             do {
                 try await API.playSong(arg)
-                say("\(t.title) sent to the TV.")
             } catch { say(error.localizedDescription, bad: true) }
-            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            try? await Task.sleep(nanoseconds: 1_200_000_000)
             await refreshNowPlaying()
+            await refreshMusic()
         }
     }
 }
@@ -392,15 +421,27 @@ enum Match {
             out.append(Playlist(name: name, fav: name.lowercased().contains("favorites"), tracks: tracks))
         }
 
-        var extra: [Track] = []
+        // "All songs": every song on the mini PC (Jellyfin), A to Z, with the playlist cover when there is one.
+        var artBy: [String: URL] = [:]
+        for p in out {
+            for t in p.tracks where !t.songId.isEmpty {
+                if let a = t.art, artBy[t.songId] == nil { artBy[t.songId] = a }
+            }
+        }
+        var all: [[String]] = []
         for it in lib {
             let sid = str(it["id"])
-            if sid.isEmpty || used.contains(sid) { continue }
-            let t = rx(str(it["title"]), "^\\s*\\d{1,3}\\.\\s+")
-            extra.append(Track(id: "x-\(extra.count)", n: extra.count + 1, title: t, artist: str(it["artist"]),
-                               art: nil, songId: sid, match: title(t)))
+            if sid.isEmpty { continue }
+            all.append([rx(str(it["title"]), "^\\s*\\d{1,3}\\.\\s+"), str(it["artist"]), sid])
         }
-        if !extra.isEmpty { out.append(Playlist(name: "Other songs", fav: false, tracks: extra)) }
+        all.sort { $0[0].localizedCaseInsensitiveCompare($1[0]) == .orderedAscending }
+        var everything: [Track] = []
+        for (i, a) in all.enumerated() {
+            let art = artBy[a[2]] ?? URL(string: "http://\(API.host):8096/Items/\(a[2])/Images/Primary?maxHeight=200")
+            everything.append(Track(id: "a-\(i)", n: i + 1, title: a[0], artist: a[1], art: art, songId: a[2], match: title(a[0])))
+        }
+        _ = used
+        if !everything.isEmpty { out.append(Playlist(name: "All songs", fav: false, tracks: everything)) }
         return out
     }
 }

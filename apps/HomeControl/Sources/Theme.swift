@@ -149,3 +149,29 @@ struct RainbowFan: View {
         .aspectRatio(1, contentMode: .fit)
     }
 }
+
+/// A picture shipped inside the app (Sources/Icons), like Landon's app icons. WebP works too.
+struct BundleIcon: View {
+    let file: String
+    var size: CGFloat = 56
+    var corner: CGFloat? = nil
+
+    private var image: UIImage? {
+        let parts = file.split(separator: ".")
+        guard parts.count == 2, let p = Bundle.main.path(forResource: String(parts[0]), ofType: String(parts[1])) else { return nil }
+        return UIImage(contentsOfFile: p)
+    }
+
+    var body: some View {
+        Group {
+            if let img = image {
+                Image(uiImage: img).resizable().scaledToFill()
+            } else {
+                ZStack { Tan.chip; Image(systemName: "app").foregroundStyle(Tan.iconFg) }
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: corner ?? size * 0.225, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: corner ?? size * 0.225, style: .continuous).stroke(Tan.line, lineWidth: 0.5))
+    }
+}

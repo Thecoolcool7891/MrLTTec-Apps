@@ -33,6 +33,10 @@ targets:
           UIApplicationSupportsMultipleScenes: false
         UIUserInterfaceStyle: Dark
         NSBonjourServices: [_companion-link._tcp]
+        # MrLTTec Control's Settings has an Open button for this app (mrlttechome://).
+        CFBundleURLTypes:
+          - CFBundleURLName: com.mrlttec.smarthome
+            CFBundleURLSchemes: [mrlttechome]
         NSLocalNetworkUsageDescription: MrLTTec Home finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

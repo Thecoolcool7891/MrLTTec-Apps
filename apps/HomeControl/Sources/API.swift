@@ -116,6 +116,120 @@ enum API {
     static func playSong(_ t: String) async throws {
         _ = try await main("/adb?ip=\(tvIp)&v=musicplay&t=\(t)", timeout: 30)
     }
+
+    static func enc(_ s: String) -> String {
+        var ok = CharacterSet.alphanumerics
+        ok.insert(charactersIn: "-._~")
+        return s.addingPercentEncoding(withAllowedCharacters: ok) ?? ""
+    }
+
+    /// A TV command through the main app's adb route: a key ("input", "home"...) or "app" / "text" with an argument.
+    static func adb(_ v: String, _ t: String = "", timeout: TimeInterval = 20) async throws {
+        var path = "/adb?ip=\(tvIp)&v=\(enc(v))"
+        if !t.isEmpty { path += "&t=\(enc(t))" }
+        _ = try await main(path, timeout: timeout)
+    }
+
+    // MARK: MrLTTec Music control port (TV :8790)
+
+    /// MrLTTec Music's control port. At home the phone talks to the TV directly (fastest); otherwise the
+    /// mini PC passes it through (/tvmusic/remote). GET for state/queue, POST for commands.
+    static func music(_ v: String, _ body: [String: Any]? = nil, timeout: TimeInterval = 6) async throws -> Data {
+        let get = v == "state" || v == "queue"
+        if host == lanHost {
+            if let d = try? await direct(v, body, get: get) { return d }
+        }
+        return try await request(8765, "/tvmusic/remote?v=\(v)", method: get ? "GET" : "POST",
+                                 json: get ? nil : (body ?? [:]), timeout: timeout)
+    }
+
+    private static func direct(_ v: String, _ body: [String: Any]?, get: Bool) async throws -> Data {
+        guard let u = URL(string: "http://\(tvIp):8790/\(v)") else { throw APIError(message: "bad url") }
+        var r = URLRequest(url: u, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 1.5)
+        r.httpMethod = get ? "GET" : "POST"
+        if !get {
+            r.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            r.httpBody = try JSONSerialization.data(withJSONObject: body ?? [:])
+        }
+        let (d, resp) = try await session.data(for: r)
+        let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
+        if code < 200 || code >= 300 { throw APIError(message: errorText(d, code)) }
+        return d
+    }
+
+    static func musicState() async throws -> MusicState {
+        try JSONDecoder().decode(MusicState.self, from: try await music("state", timeout: 6))
+    }
+
+    static func musicQueue() async throws -> MusicQueue {
+        try JSONDecoder().decode(MusicQueue.self, from: try await music("queue", timeout: 8))
+    }
+
+    // MARK: Gaming PC helper (through the main app's /pc route)
+
+    static func pcStats() async throws -> PCStats {
+        let d = try await request(8765, "/pc?v=stats", method: "POST", timeout: 12)
+        return try JSONDecoder().decode(PCStats.self, from: d)
+    }
+
+    static func pcLaunch(_ id: String) async throws {
+        _ = try await main("/pc?v=launch&a=\(enc(id))", timeout: 15)
+    }
+}
+
+/// MrLTTec Music's GET /state.
+struct MusicState: Decodable, Equatable {
+    var playing: Bool?
+    var id: String?
+    var title: String?
+    var artist: String?
+    var album: String?
+    var art: String?
+    var positionMs: Double?
+    var durationMs: Double?
+    var list: String?
+    var index: Int?
+    var queueLength: Int?
+    var shuffle: Bool?
+    var repeatOn: Bool?
+    var volume: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case playing, id, title, artist, album, art, positionMs, durationMs, list, index, queueLength, shuffle, volume
+        case repeatOn = "repeat"
+    }
+}
+
+struct MusicQueue: Decodable {
+    struct Item: Decodable, Identifiable, Hashable {
+        var id: String
+        var title: String?
+        var artist: String?
+    }
+    var list: String?
+    var index: Int?
+    var items: [Item]?
+}
+
+/// The gaming PC helper's GET /stats (see PROMPT-pc-helper-stats.md on the mini PC). Every value may be missing.
+struct PCStats: Decodable {
+    struct Chip: Decodable { var name: String?; var tempC: Double?; var loadPct: Double? }
+    struct Ram: Decodable { var usedGB: Double?; var totalGB: Double? }
+    struct Net: Decodable { var name: String?; var downMbps: Double?; var upMbps: Double? }
+    struct Drive: Decodable, Identifiable {
+        var name: String?
+        var label: String?
+        var freeGB: Double?
+        var totalGB: Double?
+        var id: String { (name ?? "") + "|" + (label ?? "") }
+    }
+    var cpu: Chip?
+    var gpu: Chip?
+    var ram: Ram?
+    var net: Net?
+    var drives: [Drive]?
+    var uptimeSec: Double?
+    var running: [String]?
 }
 
 // MARK: - Replies
