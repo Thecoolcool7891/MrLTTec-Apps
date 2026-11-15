@@ -30,6 +30,10 @@ struct SettingsView: View {
                     Text("Everything stays on this iPhone. Nothing is sent anywhere except to the devices you control.")
                 }
 
+                Section {
+                    NavigationLink { ReportProblemView() } label: { Label("Report a problem", systemImage: "exclamationmark.bubble") }
+                }
+
                 Section("Updates") {
                     UpdateSettingsRow(updater: updater)
                 }

@@ -12,6 +12,7 @@ final class Runner: ObservableObject {
 
     func show(_ text: String, error: Bool = false) {
         note = text; isError = error
+        if error { ErrorLog.add(text) }
         hideTask?.cancel()
         hideTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: error ? 6_000_000_000 : 3_000_000_000)

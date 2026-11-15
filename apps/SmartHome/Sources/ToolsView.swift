@@ -25,6 +25,9 @@ struct ToolsView: View {
                     NavigationLink { HostListView() } label: {
                         Label("Every device on this network", systemImage: "list.bullet.rectangle")
                     }
+                    NavigationLink { HealthView() } label: {
+                        Label("Network health check", systemImage: "stethoscope")
+                    }
                 }
 
                 Section {

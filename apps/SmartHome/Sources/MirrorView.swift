@@ -26,8 +26,30 @@ struct BroadcastButton: UIViewRepresentable {
 enum Mirror {
     static let port = 8799
 
-    static func isLive() async -> Bool {
-        (try? await Http.call("http://127.0.0.1:\(port)/status", timeout: 1)) != nil
+    struct Status: Equatable { var live = false; var browsers = 0; var tvs = 0; var quality = ""; var lowLag = false
+        var watching: Int { browsers + tvs } }
+
+    static func status() async -> Status {
+        guard let r = try? await Http.call("http://127.0.0.1:\(port)/status", timeout: 1) else { return Status() }
+        let j = (try? JSONSerialization.jsonObject(with: r.data)) as? [String: Any] ?? [:]
+        return Status(live: true, browsers: j["browsers"] as? Int ?? 0, tvs: j["tvs"] as? Int ?? 0,
+                      quality: j["quality"] as? String ?? "", lowLag: j["lowLag"] as? Bool ?? false)
+    }
+
+    static func isLive() async -> Bool { await status().live }
+
+    /// Sends the chosen quality to the running broadcast (it can't read the app's settings directly).
+    static func applySettings() async {
+        let q = UserDefaults.standard.string(forKey: "mirrorQuality") ?? "balanced"
+        let ll = UserDefaults.standard.bool(forKey: "mirrorLowLag") ? 1 : 0
+        _ = try? await Http.call("http://127.0.0.1:\(port)/config?quality=\(q)&lowlag=\(ll)", timeout: 1)
+    }
+
+    /// Keeps the broadcast's quality in line with the app's choice.
+    static func syncIfNeeded(_ s: Status) async {
+        let q = UserDefaults.standard.string(forKey: "mirrorQuality") ?? "balanced"
+        let ll = UserDefaults.standard.bool(forKey: "mirrorLowLag")
+        if s.live && (s.quality != q || s.lowLag != ll) { await applySettings() }
     }
 
     /// The iPhone's address on the same network as `ip` (or its first Wi-Fi address).
@@ -55,6 +77,7 @@ enum Mirror {
 struct BroadcastHeader: View {
     let live: Bool
     let subtitle: String
+    var watching: Int = 0
     var body: some View {
         HStack(spacing: 14) {
             ZStack {
@@ -70,7 +93,38 @@ struct BroadcastHeader: View {
                     .font(.subheadline.weight(.semibold))
                 Text(subtitle).font(.caption).foregroundStyle(.secondary)
             }
+            Spacer(minLength: 0)
+            if live {
+                VStack(spacing: 1) {
+                    Text("\(watching)").font(.title3.weight(.bold).monospacedDigit()).contentTransition(.numericText())
+                    Text("watching").font(.caption2).foregroundStyle(.secondary)
+                }
+                .foregroundStyle(watching > 0 ? Theme.gold : .secondary)
+                .animation(.snappy, value: watching)
+            }
         }
+    }
+}
+
+/// Smooth / Balanced / Sharp and Low lag, shared by both mirror screens.
+struct MirrorQualityPicker: View {
+    @AppStorage("mirrorQuality") private var quality = "balanced"
+    @AppStorage("mirrorLowLag") private var lowLag = false
+    var body: some View {
+        Picker("Quality", selection: $quality) {
+            Text("Smooth").tag("smooth")
+            Text("Balanced").tag("balanced")
+            Text("Sharp").tag("sharp")
+        }
+        .pickerStyle(.segmented)
+        .onChange(of: quality) { _, _ in Task { await Mirror.applySettings() } }
+        Toggle(isOn: $lowLag) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Low lag")
+                Text("Fastest in a web browser. Drops frames instead of falling behind.").font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .onChange(of: lowLag) { _, _ in Task { await Mirror.applySettings() } }
     }
 }
 
@@ -82,10 +136,12 @@ struct MirrorSection: View {
     @State private var live = false
     @State private var sent = false
     @State private var sending = false
+    @State private var watching = 0
 
     var body: some View {
         Section {
-            BroadcastHeader(live: live, subtitle: live ? (sent ? "Showing on \(target.name)." : "Sending it to the TV…") : "Pick \"MrLTTec Mirror\" if it asks.")
+            BroadcastHeader(live: live, subtitle: live ? (sent ? "Showing on \(target.name)." : "Sending it to the TV…") : "Pick \"MrLTTec Mirror\" if it asks.", watching: watching)
+            MirrorQualityPicker()
             Button { Task { await send() } } label: {
                 Label(sent ? "Send to the TV again" : "Show my screen on the TV", systemImage: "rectangle.on.rectangle")
             }
@@ -100,8 +156,11 @@ struct MirrorSection: View {
         }
         .task {
             while !Task.isCancelled {
-                let up = await Mirror.isLive()
+                let st = await Mirror.status()
+                let up = st.live
                 if up != live { withAnimation { live = up } }
+                watching = st.watching
+                await Mirror.syncIfNeeded(st)
                 if up && !sent && !sending { await send() }
                 if !up { sent = false }
                 try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -152,14 +211,16 @@ struct MirrorSection: View {
 struct BrowserMirrorView: View {
     @State private var live = false
     @State private var addr: String?
+    @State private var browsers = 0
 
     private var url: String? { addr.map { "http://\($0):\(Mirror.port)" } }
 
     var body: some View {
         Form {
             Section {
-                BroadcastHeader(live: live, subtitle: live ? "Open the address below on the other device." : "Pick \"MrLTTec Mirror\" if it asks.")
+                BroadcastHeader(live: live, subtitle: live ? "Open the address below on the other device." : "Pick \"MrLTTec Mirror\" if it asks.", watching: browsers)
             }
+            Section("Quality") { MirrorQualityPicker() }
             Section {
                 if let url {
                     Text(url).font(.title3.monospaced().weight(.semibold)).textSelection(.enabled)
@@ -183,8 +244,10 @@ struct BrowserMirrorView: View {
         .task {
             while !Task.isCancelled {
                 addr = Mirror.myAddress()
-                let up = await Mirror.isLive()
-                if up != live { withAnimation { live = up } }
+                let st = await Mirror.status()
+                if st.live != live { withAnimation { live = st.live } }
+                browsers = st.browsers
+                await Mirror.syncIfNeeded(st)
                 try? await Task.sleep(nanoseconds: 1_500_000_000)
             }
         }

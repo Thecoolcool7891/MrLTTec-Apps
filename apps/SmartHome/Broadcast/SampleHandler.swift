@@ -24,6 +24,17 @@ class SampleHandler: RPBroadcastSampleHandler {
     private var muxer = TSMuxer()
     private let ci = CIContext(options: [.cacheIntermediates: false])
     private let server = StreamServer()
+    private var appliedConfig = -1
+
+    /// Quality presets the app can pick (sent to /config). Low lag sends more browser frames and drops late ones.
+    struct Preset { let longSide: Double; let bitrate: Int; let jpegFps: Double; let jpegQ: Double }
+    static func preset(_ quality: String, lowLag: Bool) -> Preset {
+        switch quality {
+        case "smooth": return Preset(longSide: 960, bitrate: 2_000_000, jpegFps: lowLag ? 24 : 15, jpegQ: 0.5)
+        case "sharp": return Preset(longSide: 1920, bitrate: 6_000_000, jpegFps: lowLag ? 15 : 10, jpegQ: 0.8)
+        default: return Preset(longSide: 1280, bitrate: 3_500_000, jpegFps: lowLag ? 20 : 12, jpegQ: 0.6)
+        }
+    }
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) { server.start() }
 
@@ -41,7 +52,15 @@ class SampleHandler: RPBroadcastSampleHandler {
         if firstPTS == nil { firstPTS = pts }
         let wants = server.wants
         guard wants.video || wants.jpeg else { return }
-        if pool == nil { setup(CVPixelBufferGetWidth(pb), CVPixelBufferGetHeight(pb)) }
+        let cfg = server.config
+        if cfg.version != appliedConfig {
+            // New quality picked in the app: rebuild the scaler and encoder at the new size.
+            if let e = encoder { VTCompressionSessionInvalidate(e) }
+            encoder = nil; pool = nil; scaler = nil
+            appliedConfig = cfg.version
+        }
+        let p = SampleHandler.preset(cfg.quality, lowLag: cfg.lowLag)
+        if pool == nil { setup(CVPixelBufferGetWidth(pb), CVPixelBufferGetHeight(pb), p) }
         guard let scaled = scale(pb) else { return }
 
         if wants.video, let encoder {
@@ -54,15 +73,15 @@ class SampleHandler: RPBroadcastSampleHandler {
             }
         }
 
-        // Browsers: about 12 JPEG frames a second, skipped while the last one is still being made.
-        if wants.jpeg, !jpegBusy, lastJpeg == .zero || CMTimeGetSeconds(CMTimeSubtract(pts, lastJpeg)) >= 1.0 / 12 {
+        // Browsers: JPEG frames at the preset's rate, skipped while the last one is still being made.
+        if wants.jpeg, !jpegBusy, lastJpeg == .zero || CMTimeGetSeconds(CMTimeSubtract(pts, lastJpeg)) >= 1.0 / p.jpegFps {
             lastJpeg = pts
             jpegBusy = true
             jpegQ.async { [weak self] in
                 guard let self else { return }
                 let img = CIImage(cvPixelBuffer: scaled)
                 if let cs = CGColorSpace(name: CGColorSpace.sRGB),
-                   let jpg = self.ci.jpegRepresentation(of: img, colorSpace: cs, options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: 0.6]) {
+                   let jpg = self.ci.jpegRepresentation(of: img, colorSpace: cs, options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: p.jpegQ]) {
                     self.server.sendJpeg(jpg)
                 }
                 self.jpegBusy = false
@@ -72,8 +91,8 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     // MARK: Encoder
 
-    private func setup(_ w: Int, _ h: Int) {
-        let f = min(1.0, 1280.0 / Double(max(w, h)))
+    private func setup(_ w: Int, _ h: Int, _ p: Preset) {
+        let f = min(1.0, p.longSide / Double(max(w, h)))
         outW = Int(Double(w) * f) & ~1
         outH = Int(Double(h) * f) & ~1
         let attrs: [String: Any] = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
@@ -92,7 +111,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         VTSessionSetProperty(s, key: kVTCompressionPropertyKey_AllowFrameReordering, value: kCFBooleanFalse)
         VTSessionSetProperty(s, key: kVTCompressionPropertyKey_MaxKeyFrameInterval, value: 30 as CFNumber)
         VTSessionSetProperty(s, key: kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, value: 1 as CFNumber)
-        VTSessionSetProperty(s, key: kVTCompressionPropertyKey_AverageBitRate, value: 3_500_000 as CFNumber)
+        VTSessionSetProperty(s, key: kVTCompressionPropertyKey_AverageBitRate, value: p.bitrate as CFNumber)
         VTSessionSetProperty(s, key: kVTCompressionPropertyKey_ExpectedFrameRate, value: 30 as CFNumber)
         VTCompressionSessionPrepareToEncodeFrames(s)
         encoder = s
@@ -173,6 +192,9 @@ final class StreamServer {
     private var currentStart = -1.0
     private var nextSeq = 0
     private var lastHlsRequest = Date.distantPast
+    private var cfg = (quality: "balanced", lowLag: false, version: 0)
+
+    var config: (quality: String, lowLag: Bool, version: Int) { q.sync { cfg } }
 
     var wants: (video: Bool, jpeg: Bool) {
         q.sync {
@@ -184,7 +206,9 @@ final class StreamServer {
     func takeKeyframeRequest() -> Bool { q.sync { let w = wantKey; wantKey = false; return w } }
 
     func start() {
-        let params = NWParameters.tcp
+        let tcp = NWProtocolTCP.Options()
+        tcp.noDelay = true
+        let params = NWParameters(tls: nil, tcp: tcp)
         params.allowLocalEndpointReuse = true
         guard let l = try? NWListener(using: params, on: NWEndpoint.Port(rawValue: StreamServer.port)!) else { return }
         l.newConnectionHandler = { [weak self] c in self?.accept(c) }
@@ -214,7 +238,22 @@ final class StreamServer {
             let path = parts.count > 1 ? String(parts[1]) : "/"
             let head = line.hasPrefix("HEAD")
 
-            if path.hasPrefix("/status") { self.reply(c, "200 OK", "text/plain", Data("ok".utf8)); return }
+            if path.hasPrefix("/status") {
+                let browsers = self.viewers.values.filter { $0.jpeg }.count
+                let tvs = self.viewers.values.filter { !$0.jpeg }.count + (Date().timeIntervalSince(self.lastHlsRequest) < 15 ? 1 : 0)
+                let json = "{\"ok\":true,\"browsers\":\(browsers),\"tvs\":\(tvs),\"quality\":\"\(self.cfg.quality)\",\"lowLag\":\(self.cfg.lowLag)}"
+                self.reply(c, "200 OK", "application/json", Data(json.utf8)); return
+            }
+            if path.hasPrefix("/config") {
+                let comps = URLComponents(string: "http://x" + path)
+                for item in comps?.queryItems ?? [] {
+                    if item.name == "quality", let v = item.value, ["smooth", "balanced", "sharp"].contains(v) { self.cfg.quality = v }
+                    if item.name == "lowlag" { self.cfg.lowLag = item.value == "1" }
+                }
+                self.cfg.version += 1
+                self.wantKey = true
+                self.reply(c, "200 OK", "text/plain", Data("ok".utf8)); return
+            }
             if path == "/" || path.hasPrefix("/index") { self.reply(c, "200 OK", "text/html; charset=utf-8", Data(StreamServer.page.utf8)); return }
             if path.hasPrefix("/live.m3u8") {
                 self.lastHlsRequest = Date()
@@ -282,7 +321,8 @@ final class StreamServer {
         q.async {
             let part = Data("--frame\r\nContent-Type: image/jpeg\r\nContent-Length: \(jpg.count)\r\n\r\n".utf8) + jpg + Data("\r\n".utf8)
             for (id, v) in self.viewers where v.jpeg {
-                if v.inFlight > 1_500_000 { continue }   // skip a frame for slow browsers
+                // Skip frames for browsers that are behind; low lag skips much sooner.
+                if v.inFlight > (self.cfg.lowLag ? 250_000 : 1_500_000) { continue }
                 self.push(v, id, part)
             }
         }
