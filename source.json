@@ -196,6 +196,37 @@
       "versionDescription": "Mirror quality presets, low lag, viewer count; Report a problem; Network health check",
       "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.20/SmartHome-2.0.20.ipa",
       "size": 1635762
+    },
+    {
+      "versions": [
+        {
+          "version": "1.0.21",
+          "buildVersion": "21",
+          "date": "2026-11-15T18:55:08Z",
+          "localizedDescription": "Add MrLTTec Control: native app for the mini PC server over Tailscale",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.21/HomeControl-1.0.21.ipa",
+          "size": 415780,
+          "minOSVersion": "26.0"
+        }
+      ],
+      "name": "MrLTTec Control",
+      "bundleIdentifier": "com.mrlttec.homecontrol",
+      "developerName": "MrLTTec",
+      "subtitle": "MrLTTec's room, from anywhere on Tailscale.",
+      "localizedDescription": "The native app for the MrLTTec Smart Home Control server. Lights, the monitor plug and LEDs, the gaming PC with its RGB fan, what's playing on the TV, a TV remote, scenes, and MrLTTec Music. It only connects through the owner's Tailscale network; without it, the app just asks you to connect to Tailscale.",
+      "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/apps/HomeControl/icon.png",
+      "tintColor": "#8B5A35",
+      "category": "utilities",
+      "screenshots": [],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {}
+      },
+      "version": "1.0.21",
+      "versionDate": "2026-11-15T18:55:08Z",
+      "versionDescription": "Add MrLTTec Control: native app for the mini PC server over Tailscale",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.21/HomeControl-1.0.21.ipa",
+      "size": 415780
     }
   ],
   "news": []
