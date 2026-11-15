@@ -200,6 +200,15 @@
     {
       "versions": [
         {
+          "version": "1.0.25",
+          "buildVersion": "25",
+          "date": "2026-11-15T20:19:35Z",
+          "localizedDescription": "MrLTTec Control: use home Wi-Fi (10.0.0.187) when it answers",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.25/HomeControl-1.0.25.ipa",
+          "size": 416899,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.23",
           "buildVersion": "23",
           "date": "2026-11-15T20:10:45Z",
@@ -240,11 +249,11 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.23",
-      "versionDate": "2026-11-15T20:10:45Z",
-      "versionDescription": "MrLTTec Control: brown outside, cream inside icon",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.23/HomeControl-1.0.23.ipa",
-      "size": 416115
+      "version": "1.0.25",
+      "versionDate": "2026-11-15T20:19:35Z",
+      "versionDescription": "MrLTTec Control: use home Wi-Fi (10.0.0.187) when it answers",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.25/HomeControl-1.0.25.ipa",
+      "size": 416899
     }
   ],
   "news": [
