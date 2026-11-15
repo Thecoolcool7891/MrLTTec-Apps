@@ -10,6 +10,15 @@
     {
       "versions": [
         {
+          "version": "1.0.27",
+          "buildVersion": "27",
+          "date": "2026-11-15T22:17:46Z",
+          "localizedDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.27/BuzzLab-1.0.27.ipa",
+          "size": 358480,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.13",
           "buildVersion": "13",
           "date": "2026-11-14T22:42:59Z",
@@ -77,14 +86,23 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.13",
-      "versionDate": "2026-11-14T22:42:59Z",
+      "version": "1.0.27",
+      "versionDate": "2026-11-15T22:17:46Z",
       "versionDescription": "Add Buzz Lab haptics app and AltStore source pipeline",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.13/BuzzLab-1.0.13.ipa",
-      "size": 358479
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/BuzzLab-v1.0.27/BuzzLab-1.0.27.ipa",
+      "size": 358480
     },
     {
       "versions": [
+        {
+          "version": "2.0.27",
+          "buildVersion": "27",
+          "date": "2026-11-15T22:17:46Z",
+          "localizedDescription": "MrLTTec Control: Now Playing page, new remote, music tab, Gaming PC page",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.27/SmartHome-2.0.27.ipa",
+          "size": 1635765,
+          "minOSVersion": "26.0"
+        },
         {
           "version": "2.0.20",
           "buildVersion": "20",
@@ -165,15 +183,6 @@
           "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.12/SmartHome-2.0.12.ipa",
           "size": 1272830,
           "minOSVersion": "26.0"
-        },
-        {
-          "version": "2.0.11",
-          "buildVersion": "11",
-          "date": "2026-11-14T22:36:04Z",
-          "localizedDescription": "MrLTTec Home: Android/Fire TV over ADB, Apple TV pairing and remote, faster update check",
-          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.11/SmartHome-2.0.11.ipa",
-          "size": 1272808,
-          "minOSVersion": "26.0"
         }
       ],
       "name": "MrLTTec Home",
@@ -191,14 +200,23 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.20",
-      "versionDate": "2026-11-15T00:28:35Z",
-      "versionDescription": "Mirror quality presets, low lag, viewer count; Report a problem; Network health check",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.20/SmartHome-2.0.20.ipa",
-      "size": 1635762
+      "version": "2.0.27",
+      "versionDate": "2026-11-15T22:17:46Z",
+      "versionDescription": "MrLTTec Control: Now Playing page, new remote, music tab, Gaming PC page",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.27/SmartHome-2.0.27.ipa",
+      "size": 1635765
     },
     {
       "versions": [
+        {
+          "version": "1.0.27",
+          "buildVersion": "27",
+          "date": "2026-11-15T22:17:46Z",
+          "localizedDescription": "MrLTTec Control: widgets, Live Activity, Control Center buttons, what's new in News",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.27/HomeControl-1.0.27.ipa",
+          "size": 1653687,
+          "minOSVersion": "26.0"
+        },
         {
           "version": "1.0.25",
           "buildVersion": "25",
@@ -249,19 +267,19 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.25",
-      "versionDate": "2026-11-15T20:19:35Z",
-      "versionDescription": "MrLTTec Control: use home Wi-Fi (10.0.0.187) when it answers",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.25/HomeControl-1.0.25.ipa",
-      "size": 416899
+      "version": "1.0.27",
+      "versionDate": "2026-11-15T22:17:46Z",
+      "versionDescription": "MrLTTec Control: widgets, Live Activity, Control Center buttons, what's new in News",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.27/HomeControl-1.0.27.ipa",
+      "size": 1653687
     }
   ],
   "news": [
     {
-      "title": "MrLTTec Control 1.0.25 is here",
-      "identifier": "mrlttec-control-1.0.25",
-      "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.",
-      "date": "2026-11-15T20:19:35Z",
+      "title": "MrLTTec Control 1.0.27 is here",
+      "identifier": "mrlttec-control-1.0.27",
+      "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.\n\nWhat's new:\n• Big Now Playing page: drag the progress bar, shuffle, repeat, volume and Up Next\n• New Music tab: search all your songs, MrLTTec Favorites / Brazileroas / All songs, Shuffle, cover art\n• New TV remote with power and input, plus YouTube, MrLTTec Music, Live TV and MovieBox buttons\n• Type on TV\n• Tap the Gaming PC card for its stats and to launch Steam, Fortnite, Minecraft or Discord\n• Phone volume buttons change the TV volume (Settings)\n• Open MrLTTec Home from Settings\n• Faster buttons: the screen changes right away",
+      "date": "2026-11-15T22:17:46Z",
       "tintColor": "#45342B",
       "notify": false,
       "imageURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/news/images/mrlttec-control.png",
