@@ -3,17 +3,13 @@ import ReplayKit
 import CoreImage.CIFilterBuiltins
 
 /// iOS's own "Start Broadcast" button, pointed at the MrLTTec Mirror extension.
-/// The system button doesn't center itself, so it's stretched to fill this view with its icon in the middle.
+/// The system button's icon can't be positioned reliably, so our own icon is drawn underneath and the
+/// system button sits on top almost invisible (it still gets the taps).
 final class CenteredBroadcastPicker: RPSystemBroadcastPickerView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        for case let b as UIButton in subviews {
-            b.frame = bounds
-            b.contentHorizontalAlignment = .center
-            b.contentVerticalAlignment = .center
-            b.imageView?.contentMode = .center
-            b.imageView?.tintColor = UIColor(Theme.gold)
-        }
+        // Stretch the (invisible) system button over the whole circle so any tap starts the broadcast.
+        for case let b as UIButton in subviews { b.frame = bounds }
     }
 }
 
@@ -61,8 +57,14 @@ struct BroadcastHeader: View {
     let subtitle: String
     var body: some View {
         HStack(spacing: 14) {
-            BroadcastButton().frame(width: 56, height: 56)
-                .background(Theme.gold.opacity(0.15), in: Circle())
+            ZStack {
+                Circle().fill(Theme.gold.opacity(0.15))
+                Image(systemName: live ? "stop.circle.fill" : "record.circle")
+                    .font(.system(size: 30, weight: .semibold))
+                    .foregroundStyle(live ? .red : Theme.gold)
+                BroadcastButton().opacity(0.02)
+            }
+            .frame(width: 56, height: 56)
             VStack(alignment: .leading, spacing: 3) {
                 Text(live ? "Your screen is being broadcast" : "Tap the button, then Start Broadcast")
                     .font(.subheadline.weight(.semibold))
