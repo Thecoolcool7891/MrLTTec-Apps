@@ -1,0 +1,12 @@
+{
+  "name": "MrLTTec Control",
+  "scheme": "HomeControl",
+  "bundleIdentifier": "com.mrlttec.homecontrol",
+  "developerName": "MrLTTec",
+  "subtitle": "MrLTTec's room, from anywhere on Tailscale.",
+  "localizedDescription": "The native app for the MrLTTec Smart Home Control server. Lights, the monitor plug and LEDs, the gaming PC with its RGB fan, what's playing on the TV, a TV remote, scenes, and MrLTTec Music. It only connects through the owner's Tailscale network; without it, the app just asks you to connect to Tailscale.",
+  "tintColor": "#8B5A35",
+  "category": "utilities",
+  "minOSVersion": "26.0",
+  "baseVersion": "1.0"
+}

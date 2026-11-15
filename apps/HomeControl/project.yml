@@ -1,0 +1,44 @@
+# XcodeGen spec for MrLTTec Control: Landon's own room (the mini PC's Smart Home Control server), over Tailscale.
+# Target device: iPhone 17 Pro. Deployment target 26.0 so it runs on iOS 26 and 27.
+name: HomeControl
+options:
+  bundleIdPrefix: com.mrlttec
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  HomeControl:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+      - path: ../../shared
+    scheme: {}
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleDisplayName: MrLTTec Control
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIRequiredDeviceCapabilities: [arm64]
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UIUserInterfaceStyle: Light
+        NSLocalNetworkUsageDescription: MrLTTec Control talks to the MrLTTec server through your Tailscale network.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mrlttec.homecontrol
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_IDENTITY: ""
