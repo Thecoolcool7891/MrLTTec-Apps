@@ -247,5 +247,16 @@
       "size": 416115
     }
   ],
-  "news": []
+  "news": [
+    {
+      "title": "MrLTTec Control is here",
+      "identifier": "mrlttec-control-launch",
+      "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, from anywhere over Tailscale.",
+      "date": "2026-11-15T19:30:00-05:00",
+      "tintColor": "#45342B",
+      "notify": false,
+      "imageURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/news/images/mrlttec-control.png",
+      "appID": "com.mrlttec.homecontrol"
+    }
+  ]
 }
