@@ -200,6 +200,15 @@
     {
       "versions": [
         {
+          "version": "1.0.22",
+          "buildVersion": "22",
+          "date": "2026-11-15T19:03:18Z",
+          "localizedDescription": "MrLTTec Control: allow http to the Tailscale address",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.22/HomeControl-1.0.22.ipa",
+          "size": 416073,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.21",
           "buildVersion": "21",
           "date": "2026-11-15T18:55:08Z",
@@ -222,11 +231,11 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.21",
-      "versionDate": "2026-11-15T18:55:08Z",
-      "versionDescription": "Add MrLTTec Control: native app for the mini PC server over Tailscale",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.21/HomeControl-1.0.21.ipa",
-      "size": 415780
+      "version": "1.0.22",
+      "versionDate": "2026-11-15T19:03:18Z",
+      "versionDescription": "MrLTTec Control: allow http to the Tailscale address",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.22/HomeControl-1.0.22.ipa",
+      "size": 416073
     }
   ],
   "news": []
