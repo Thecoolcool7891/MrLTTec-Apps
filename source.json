@@ -200,6 +200,15 @@
     {
       "versions": [
         {
+          "version": "1.0.23",
+          "buildVersion": "23",
+          "date": "2026-11-15T20:10:45Z",
+          "localizedDescription": "MrLTTec Control: brown outside, cream inside icon",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.23/HomeControl-1.0.23.ipa",
+          "size": 416115,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.22",
           "buildVersion": "22",
           "date": "2026-11-15T19:03:18Z",
@@ -231,11 +240,11 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.22",
-      "versionDate": "2026-11-15T19:03:18Z",
-      "versionDescription": "MrLTTec Control: allow http to the Tailscale address",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.22/HomeControl-1.0.22.ipa",
-      "size": 416073
+      "version": "1.0.23",
+      "versionDate": "2026-11-15T20:10:45Z",
+      "versionDescription": "MrLTTec Control: brown outside, cream inside icon",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.23/HomeControl-1.0.23.ipa",
+      "size": 416115
     }
   ],
   "news": []
