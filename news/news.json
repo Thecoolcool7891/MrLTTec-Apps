@@ -1,9 +1,9 @@
 [
   {
-    "identifier": "mrlttec-control-launch",
-    "title": "MrLTTec Control is here",
-    "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, from anywhere over Tailscale.",
-    "date": "2026-11-15T19:30:00-05:00",
+    "identifier": "mrlttec-control-{version}",
+    "title": "MrLTTec Control {version} is here",
+    "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.",
+    "date": "{date}",
     "image": "mrlttec-control.png",
     "appID": "com.mrlttec.homecontrol",
     "tintColor": "#45342B"

@@ -10,6 +10,10 @@ Each item in news.json:
   url         optional: a web link to open instead
   tintColor   optional: card color, default MrLTTec brown
   notify      optional: true = some stores send a notification for it
+
+Auto-updating posts: with an appID, "{version}" in identifier/title/caption becomes that app's newest version from
+source.json, and "date": "{date}" becomes that version's build time. So every build refreshes the post by itself
+(a new identifier per version makes stores show it as new).
 """
 import json
 import os
@@ -22,8 +26,21 @@ with open("news/news.json", encoding="utf-8") as f:
 with open("source.json", encoding="utf-8") as f:
     source = json.load(f)
 
+apps = {a.get("bundleIdentifier"): a for a in source.get("apps", [])}
+
 news = []
 for it in items:
+    app = apps.get(it.get("appID"))
+    if app:
+        it = dict(it)
+        ver = app.get("version", "")
+        for k in ("identifier", "title", "caption"):
+            if k in it:
+                it[k] = it[k].replace("{version}", ver)
+        if it.get("date") == "{date}":
+            it["date"] = app.get("versionDate", "")
+    if "{" in it["date"]:
+        continue  # app not in the source yet
     n = {
         "title": it["title"],
         "identifier": it["identifier"],
