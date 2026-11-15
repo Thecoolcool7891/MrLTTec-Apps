@@ -6,6 +6,16 @@
     "date": "{date}",
     "image": "mrlttec-control.png",
     "appID": "com.mrlttec.homecontrol",
-    "tintColor": "#45342B"
+    "tintColor": "#45342B",
+    "changes": [
+      "Big Now Playing page: drag the progress bar, shuffle, repeat, volume and Up Next",
+      "New Music tab: search all your songs, MrLTTec Favorites / Brazileroas / All songs, Shuffle, cover art",
+      "New TV remote with power and input, plus YouTube, MrLTTec Music, Live TV and MovieBox buttons",
+      "Type on TV",
+      "Tap the Gaming PC card for its stats and to launch Steam, Fortnite, Minecraft or Discord",
+      "Phone volume buttons change the TV volume (Settings)",
+      "Open MrLTTec Home from Settings",
+      "Faster buttons: the screen changes right away"
+    ]
   }
 ]

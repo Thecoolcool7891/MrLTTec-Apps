@@ -77,6 +77,18 @@ struct RootView: View {
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Tan.bg)
         }
+        .sheet(isPresented: $model.showBrightness) {
+            BrightnessSheet()
+                .environmentObject(model)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(Tan.bg)
+        }
+        .onOpenURL { url in
+            // mrlttec-control://brightness (Control Center button), mrlttec-control://nowplaying
+            if url.host == "brightness" { model.showBrightness = true }
+            if url.host == "nowplaying" { model.showNowPlaying = true }
+        }
         .onChange(of: volumeButtons) { _, _ in updateVolumeButtons() }
         .onChange(of: model.connected) { _, _ in updateVolumeButtons() }
         .task { await model.run() }

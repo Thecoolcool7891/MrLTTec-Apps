@@ -10,6 +10,8 @@ Each item in news.json:
   url         optional: a web link to open instead
   tintColor   optional: card color, default MrLTTec brown
   notify      optional: true = some stores send a notification for it
+  changes     optional: list of short lines ("what changed"), added under the caption as bullet points.
+              Update it whenever an app gets a new version worth telling about.
 
 Auto-updating posts: with an appID, "{version}" in identifier/title/caption becomes that app's newest version from
 source.json, and "date": "{date}" becomes that version's build time. So every build refreshes the post by itself
@@ -41,10 +43,15 @@ for it in items:
             it["date"] = app.get("versionDate", "")
     if "{" in it["date"]:
         continue  # app not in the source yet
+    caption = it.get("caption", "")
+    changes = [c for c in it.get("changes", []) if c]
+    if changes:
+        nl = chr(10)
+        caption = (caption + nl + nl if caption else "") + "What's new:" + nl + nl.join("• " + c for c in changes)
     n = {
         "title": it["title"],
         "identifier": it["identifier"],
-        "caption": it.get("caption", ""),
+        "caption": caption,
         "date": it["date"],
         "tintColor": it.get("tintColor", "#8B5A35"),
         "notify": bool(it.get("notify", False)),

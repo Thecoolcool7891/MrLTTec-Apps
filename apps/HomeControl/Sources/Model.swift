@@ -54,6 +54,7 @@ final class AppModel: ObservableObject {
     @Published var pcStats: PCStats?
     @Published var pcStatsAt = Date.distantPast
     @Published var pcStatsError = ""
+    @Published var showBrightness = false
     /// After an optimistic change, ignore polled state for a moment so the screen doesn't jump back.
     var msHold = Date.distantPast
 
@@ -120,6 +121,7 @@ final class AppModel: ObservableObject {
             rgb = ""
         }
         if lists.isEmpty && !musicLoading { Task { await loadMusic() } }
+        LiveNowPlaying.update(self)
     }
 
     func refreshNowPlaying() async {

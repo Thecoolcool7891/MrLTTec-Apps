@@ -16,8 +16,12 @@ targets:
     platform: iOS
     sources:
       - path: Sources
+      - path: Shared
       - path: ../../shared
     scheme: {}
+    dependencies:
+      - target: HomeWidgets
+        embed: true
     info:
       path: Sources/Info.plist
       properties:
@@ -31,6 +35,12 @@ targets:
           UIApplicationSupportsMultipleScenes: false
         UIUserInterfaceStyle: Light
         NSLocalNetworkUsageDescription: MrLTTec Control talks to the MrLTTec server on your home Wi-Fi.
+        # Lock Screen / Dynamic Island now playing
+        NSSupportsLiveActivities: true
+        # mrlttec-control://brightness opens the brightness sliders (Control Center button)
+        CFBundleURLTypes:
+          - CFBundleURLName: com.mrlttec.homecontrol
+            CFBundleURLSchemes: [mrlttec-control]
         # Plain http to the Tailscale address (100.x). Only NSAllowsArbitraryLoads: when NSAllowsLocalNetworking is
         # also set, iOS ignores NSAllowsArbitraryLoads, and 100.x isn't "local", so http to it gets blocked.
         NSAppTransportSecurity:
@@ -40,6 +50,30 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.mrlttec.homecontrol
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_IDENTITY: ""
+  # Widgets, the Lock Screen / Dynamic Island card and the Control Center buttons.
+  HomeWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Shared
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: MrLTTec Control
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mrlttec.homecontrol.widgets
+        TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGNING_ALLOWED: "NO"
         CODE_SIGNING_REQUIRED: "NO"
         CODE_SIGN_IDENTITY: ""
