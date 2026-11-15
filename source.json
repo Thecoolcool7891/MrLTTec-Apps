@@ -209,6 +209,15 @@
     {
       "versions": [
         {
+          "version": "1.0.28",
+          "buildVersion": "28",
+          "date": "2026-11-15T23:16:10Z",
+          "localizedDescription": "MrLTTec Control: Fast TV buttons (direct ADB to the Fire TV at home)",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.28/HomeControl-1.0.28.ipa",
+          "size": 1683675,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "1.0.27",
           "buildVersion": "27",
           "date": "2026-11-15T22:17:46Z",
@@ -267,19 +276,19 @@
         "entitlements": [],
         "privacy": {}
       },
-      "version": "1.0.27",
-      "versionDate": "2026-11-15T22:17:46Z",
-      "versionDescription": "MrLTTec Control: widgets, Live Activity, Control Center buttons, what's new in News",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.27/HomeControl-1.0.27.ipa",
-      "size": 1653687
+      "version": "1.0.28",
+      "versionDate": "2026-11-15T23:16:10Z",
+      "versionDescription": "MrLTTec Control: Fast TV buttons (direct ADB to the Fire TV at home)",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.28/HomeControl-1.0.28.ipa",
+      "size": 1683675
     }
   ],
   "news": [
     {
-      "title": "MrLTTec Control 1.0.27 is here",
-      "identifier": "mrlttec-control-1.0.27",
-      "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.\n\nWhat's new:\n• Big Now Playing page: drag the progress bar, shuffle, repeat, volume and Up Next\n• New Music tab: search all your songs, MrLTTec Favorites / Brazileroas / All songs, Shuffle, cover art\n• New TV remote with power and input, plus YouTube, MrLTTec Music, Live TV and MovieBox buttons\n• Type on TV\n• Tap the Gaming PC card for its stats and to launch Steam, Fortnite, Minecraft or Discord\n• Phone volume buttons change the TV volume (Settings)\n• Open MrLTTec Home from Settings\n• Faster buttons: the screen changes right away",
-      "date": "2026-11-15T22:17:46Z",
+      "title": "MrLTTec Control 1.0.28 is here",
+      "identifier": "mrlttec-control-1.0.28",
+      "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.\n\nWhat's new:\n• Fast TV buttons: at home, remote buttons, apps and typing go straight from your phone to the TV (turn on in Settings, press OK on the TV once)\n• Big Now Playing page: drag the progress bar, shuffle, repeat, volume and Up Next\n• New Music tab: search all your songs, MrLTTec Favorites / Brazileroas / All songs, Shuffle, cover art\n• New TV remote with power and input, plus YouTube, MrLTTec Music, Live TV and MovieBox buttons\n• Type on TV\n• Tap the Gaming PC card for its stats and to launch Steam, Fortnite, Minecraft or Discord\n• Phone volume buttons change the TV volume (Settings)\n• Open MrLTTec Home from Settings\n• Faster buttons: the screen changes right away",
+      "date": "2026-11-15T23:16:10Z",
       "tintColor": "#45342B",
       "notify": false,
       "imageURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/news/images/mrlttec-control.png",
