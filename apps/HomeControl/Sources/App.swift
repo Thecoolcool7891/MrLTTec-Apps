@@ -112,7 +112,7 @@ struct ConnectView: View {
                 .foregroundStyle(Tan.text)
             Text(m.connected == nil
                  ? "Connecting to the MrLTTec server..."
-                 : "Turn on Tailscale on this iPhone. MrLTTec Control only works through Tailscale, and it connects by itself as soon as Tailscale is on.")
+                 : "Join the home Wi-Fi or turn on Tailscale on this iPhone. MrLTTec Control connects by itself as soon as either one works.")
                 .font(.system(size: 15))
                 .foregroundStyle(Tan.muted)
                 .multilineTextAlignment(.center)

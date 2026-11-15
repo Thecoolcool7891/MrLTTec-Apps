@@ -43,6 +43,7 @@ final class AppModel: ObservableObject {
     @Published var musicLoading = false
     @Published var musicError = ""
     @Published var lastError = ""   // why the last connect failed (shown small on the Connect screen)
+    @Published var onWifi = false   // true = talking to 10.0.0.187 on the home Wi-Fi, false = through Tailscale
 
     private var fails = 0
     private var refreshing = false
@@ -60,7 +61,10 @@ final class AppModel: ObservableObject {
 
     func connect() async {
         do {
-            status = try await API.status(timeout: 6)
+            let (h, s) = try await API.find()
+            API.host = h
+            onWifi = h == API.lanHost
+            status = s
             fails = 0
             withAnimation { connected = true }
             lastError = ""
@@ -79,9 +83,22 @@ final class AppModel: ObservableObject {
             status = try await API.status()
             fails = 0
         } catch {
-            fails += 1
-            if fails >= 2 { withAnimation { connected = false } }
-            return
+            // Left home (Wi-Fi gone) or came home: try both addresses before giving up.
+            if let found = try? await API.find() {
+                API.host = found.0
+                onWifi = found.0 == API.lanHost
+                status = found.1
+                fails = 0
+            } else {
+                fails += 1
+                if fails >= 2 { withAnimation { connected = false } }
+                return
+            }
+        }
+        // On Tailscale but maybe back home: switch to Wi-Fi when it answers (faster, works without Tailscale).
+        if !onWifi, (try? await API.status(at: API.lanHost, timeout: 1.5)) != nil {
+            API.host = API.lanHost
+            onWifi = true
         }
         await refreshNowPlaying()
         if status?.pc?.on == true {

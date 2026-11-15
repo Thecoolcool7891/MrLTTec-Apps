@@ -18,7 +18,8 @@ struct SettingsView: View {
                             Text("MrLTTec server").font(.system(size: 16, weight: .semibold)).foregroundStyle(Tan.text)
                             HStack(spacing: 5) {
                                 Circle().fill(m.connected == true ? Tan.switchOn : Tan.bad).frame(width: 7, height: 7)
-                                Text(m.connected == true ? "Connected through Tailscale" : "Not connected")
+                                Text(m.connected != true ? "Not connected"
+                                     : (m.onWifi ? "Connected on home Wi-Fi" : "Connected through Tailscale"))
                                     .font(.system(size: 12)).foregroundStyle(Tan.muted)
                             }
                         }
@@ -59,7 +60,7 @@ struct SettingsView: View {
                 .tanCard()
                 .padding(.horizontal, 12)
 
-                Text("MrLTTec Control only talks to the mini PC through Tailscale, so it does nothing on a phone that isn't on your Tailscale network.")
+                Text("MrLTTec Control talks to the mini PC on your home Wi-Fi (\(API.lanHost)) or through Tailscale, so it does nothing on a phone that isn't on either one.")
                     .font(.system(size: 12))
                     .foregroundStyle(Tan.muted)
                     .padding(.horizontal, 18)

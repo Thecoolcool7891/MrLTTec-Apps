@@ -12,11 +12,40 @@ struct APIError: LocalizedError {
 enum API {
     /// The mini PC's Tailscale address. Can be changed in Settings.
     static let defaultHost = "100.67.247.123"
+    /// The mini PC on the home Wi-Fi. Always tried first, so at home it works without Tailscale.
+    static let lanHost = "10.0.0.187"
     static let tvIp = "10.0.0.238"
 
-    static var host: String {
+    /// The Tailscale address (or the one typed in Settings).
+    static var tailscaleHost: String {
         let h = (UserDefaults.standard.string(forKey: "serverHost") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         return h.isEmpty ? defaultHost : h
+    }
+
+    /// The address that answered last (set by find()); every request goes here.
+    static var host: String = defaultHost
+
+    /// Tries the home Wi-Fi address and Tailscale at the same time. Wi-Fi wins if it answers.
+    /// Returns the address that worked and its status, or throws the Tailscale error.
+    static func find() async throws -> (String, RoomStatus) {
+        let ts = tailscaleHost
+        let lanAddr = lanHost
+        async let lan: Result<RoomStatus, Error> = result { try await API.status(at: lanAddr, timeout: 2.5) }
+        async let tail: Result<RoomStatus, Error> = result { try await API.status(at: ts, timeout: 6) }
+        if case .success(let s) = await lan { return (lanAddr, s) }
+        switch await tail {
+        case .success(let s): return (ts, s)
+        case .failure(let e): throw e
+        }
+    }
+
+    static func result<T>(_ f: () async throws -> T) async -> Result<T, Error> {
+        do { return .success(try await f()) } catch { return .failure(error) }
+    }
+
+    static func status(at h: String, timeout: TimeInterval) async throws -> RoomStatus {
+        let d = try await request(8768, "/status", timeout: timeout, at: h)
+        return try JSONDecoder().decode(RoomStatus.self, from: d)
     }
 
     static let session: URLSession = {
@@ -28,8 +57,8 @@ enum API {
     }()
 
     static func request(_ port: Int, _ path: String, method: String = "GET", json: [String: Any]? = nil,
-                        timeout: TimeInterval = 20) async throws -> Data {
-        guard let u = URL(string: "http://\(host):\(port)\(path)") else { throw APIError(message: "The server address is not valid.") }
+                        timeout: TimeInterval = 20, at: String? = nil) async throws -> Data {
+        guard let u = URL(string: "http://\(at ?? host):\(port)\(path)") else { throw APIError(message: "The server address is not valid.") }
         var r = URLRequest(url: u, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)
         r.httpMethod = method
         if let json = json {
