@@ -147,19 +147,19 @@ struct PCCard: View {
     var body: some View {
         let on = m.status?.pc?.on == true
         HStack(spacing: 10) {
-            IconBox(symbol: "desktopcomputer", size: 36)
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Gaming PC").font(.system(size: 15, weight: .semibold)).foregroundStyle(Tan.text)
-                Text(m.pcLine).font(.system(size: 11)).foregroundStyle(Tan.muted)
+            IconBox(symbol: "desktopcomputer", size: 42)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Gaming PC").font(.system(size: 17, weight: .semibold)).foregroundStyle(Tan.text)
+                Text(m.pcLine).font(.system(size: 13)).foregroundStyle(Tan.muted)
             }
             Spacer(minLength: 6)
-            FanButton(size: 36)
-            TanSwitch(on: on || m.pcWaking, scale: 0.92) {
+            FanButton(size: 42)
+            TanSwitch(on: on || m.pcWaking, scale: 1.05) {
                 if on { confirmSleep = true } else { m.pcPower(true) }
             }
             .padding(.leading, 4)
         }
-        .tanCard(padding: 13)
+        .tanCard(padding: 15)
         .contentShape(Rectangle())
         .onTapGesture {
             Haptic.tap()
