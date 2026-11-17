@@ -95,6 +95,15 @@
     {
       "versions": [
         {
+          "version": "2.0.31",
+          "buildVersion": "31",
+          "date": "2026-11-17T23:28:18Z",
+          "localizedDescription": "TV (DLNA renderer) controls: volume, mute, sound mode, now playing, seek, repeat/shuffle, picture",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.31/SmartHome-2.0.31.ipa",
+          "size": 1732198,
+          "minOSVersion": "26.0"
+        },
+        {
           "version": "2.0.27",
           "buildVersion": "27",
           "date": "2026-11-15T22:17:46Z",
@@ -174,15 +183,6 @@
           "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.13/SmartHome-2.0.13.ipa",
           "size": 1261435,
           "minOSVersion": "26.0"
-        },
-        {
-          "version": "2.0.12",
-          "buildVersion": "12",
-          "date": "2026-11-14T22:37:31Z",
-          "localizedDescription": "MrLTTec Home: Android/Fire TV over ADB, Apple TV pairing and remote, faster update check",
-          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.12/SmartHome-2.0.12.ipa",
-          "size": 1272830,
-          "minOSVersion": "26.0"
         }
       ],
       "name": "MrLTTec Home",
@@ -200,11 +200,11 @@
           "NSLocalNetworkUsageDescription": "Finds and controls the TVs, speakers and lights on the Wi-Fi you are connected to."
         }
       },
-      "version": "2.0.27",
-      "versionDate": "2026-11-15T22:17:46Z",
-      "versionDescription": "MrLTTec Control: Now Playing page, new remote, music tab, Gaming PC page",
-      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.27/SmartHome-2.0.27.ipa",
-      "size": 1635765
+      "version": "2.0.31",
+      "versionDate": "2026-11-17T23:28:18Z",
+      "versionDescription": "TV (DLNA renderer) controls: volume, mute, sound mode, now playing, seek, repeat/shuffle, picture",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/SmartHome-v2.0.31/SmartHome-2.0.31.ipa",
+      "size": 1732198
     },
     {
       "versions": [
