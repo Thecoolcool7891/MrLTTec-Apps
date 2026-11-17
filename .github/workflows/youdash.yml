@@ -1,0 +1,36 @@
+name: Build YouDash dylib
+
+# Only on this branch. Compiles YouTubeCarPlay.dylib from YouDash source (GPL-3.0).
+on:
+  push:
+    branches: [youdash-build]
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - name: Get YouDash source (pinned commit)
+        uses: actions/checkout@v4
+        with:
+          repository: sa4hnd/YouDash
+          ref: 47041e996a93811c631a89406e57de3de0f25216
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | grep -vi beta | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Compile
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          python3 -m pip install -r requirements-build.txt
+          python3 scripts/build_carplay.py --compile-only
+          file build/YouTubeCarPlay.dylib
+          shasum -a 256 build/YouTubeCarPlay.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: YouTubeCarPlay-dylib
+          path: build/YouTubeCarPlay.dylib
