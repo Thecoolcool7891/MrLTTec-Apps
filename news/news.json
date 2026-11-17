@@ -1,5 +1,21 @@
 [
   {
+    "identifier": "toast-{version}",
+    "title": "Toast {version} is here",
+    "caption": "MrLTTec's school assistant as a real iPhone app. Chat with Toast, see grades, what's due, tests and goals, over Tailscale.",
+    "date": "{date}",
+    "appID": "com.mrlttec.toast",
+    "tintColor": "#583814",
+    "changes": [
+      "Chat with Toast and send photos, camera shots, PDFs and text files",
+      "Home: today's schedule, tests, what's due, grades and GPA, goals, reminders",
+      "Grades: every class with a live Focus read, zeros worth fixing, every assignment",
+      "Plan: due work, test tracker, grade goals, reminders",
+      "Study mode: Toast quizzes you one question at a time",
+      "Remind feed, weekly recap, morning brief, Toast's notebook"
+    ]
+  },
+  {
     "identifier": "mrlttec-control-{version}",
     "title": "MrLTTec Control {version} is here",
     "caption": "Run the whole room from your iPhone: lights, TV, music and the gaming PC, on your home Wi-Fi or anywhere over Tailscale.",

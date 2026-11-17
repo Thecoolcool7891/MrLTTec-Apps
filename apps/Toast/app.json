@@ -1,0 +1,12 @@
+{
+  "name": "Toast",
+  "scheme": "Toast",
+  "bundleIdentifier": "com.mrlttec.toast",
+  "developerName": "MrLTTec",
+  "subtitle": "MrLTTec's school assistant, over Tailscale.",
+  "localizedDescription": "The native app for the Toast Bot server. Chat with Toast and send it photos, PDFs and notes. See today's schedule, live grades and GPA, what's due, upcoming tests, grade goals and reminders. Study mode quizzes you one question at a time. It only connects through the owner's Tailscale network and needs a sign-in code from Toast.",
+  "tintColor": "#8B5A35",
+  "category": "utilities",
+  "minOSVersion": "26.0",
+  "baseVersion": "1.0"
+}
