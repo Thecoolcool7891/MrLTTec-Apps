@@ -50,7 +50,7 @@ struct SettingsView: View {
             }
             .confirmationDialog("Forget Samsung and Fire TV pairings, MAC addresses and Xbox Live IDs?", isPresented: $confirmPairings, titleVisibility: .visible) {
                 Button("Forget", role: .destructive) {
-                    for k in ["samsungTokens", "samsungMacs", "xbox", "firetv"] { UserDefaults.standard.removeObject(forKey: k) }
+                    for k in ["samsungTokens", "samsungMacs", "xbox", "firetv", "dlnaLoc"] { UserDefaults.standard.removeObject(forKey: k) }
                     Haptic.success()
                 }
             }

@@ -55,6 +55,7 @@ struct Device: Codable, Identifiable, Hashable {
         case "firetv": return "Fire TV"
         case "adb": return "Android TV"
         case "appletv": return "Apple TV"
+        case "dlna": return "TV (DLNA)"
         default: return type
         }
     }
@@ -62,7 +63,7 @@ struct Device: Codable, Identifiable, Hashable {
     var icon: String {
         switch type {
         case "sonos": return "hifispeaker.fill"
-        case "samsung", "roku", "firetv", "adb", "appletv": return "tv"
+        case "samsung", "roku", "firetv", "adb", "appletv", "dlna": return "tv"
         case "wemo", "wizplug": return "powerplug.fill"
         case "wled": return "light.strip.2"
         case "wiz": return "lightbulb.fill"
@@ -80,13 +81,14 @@ struct Device: Codable, Identifiable, Hashable {
         case "wled": return .pink
         case "wemo", "wizplug": return .green
         case "xbox": return .green
+        case "dlna": return .teal
         default: return .gray
         }
     }
 
     var category: Category {
         switch type {
-        case "sonos", "samsung", "roku", "firetv", "adb", "appletv": return .media
+        case "sonos", "samsung", "roku", "firetv", "adb", "appletv", "dlna": return .media
         case "wiz", "wled", "wemo", "wizplug": return .lights
         default: return .other
         }
@@ -95,7 +97,7 @@ struct Device: Codable, Identifiable, Hashable {
     /// Lights and plugs get an on/off switch right in the list.
     var hasSwitch: Bool { ["wiz", "wled", "wemo", "wizplug"].contains(type) }
 
-    static let types = ["sonos", "samsung", "roku", "wemo", "wled", "wiz", "wizplug", "xbox", "firetv", "adb", "appletv"]
+    static let types = ["sonos", "samsung", "roku", "wemo", "wled", "wiz", "wizplug", "xbox", "firetv", "adb", "appletv", "dlna"]
 }
 
 // MARK: - Store

@@ -75,6 +75,7 @@ struct PickedMovie: Transferable {
 
 struct CastTargetView: View {
     let target: CastTarget
+    var showRenderer = true
     @StateObject private var runner = Runner()
     @State private var link = ""
     @State private var method = ""
@@ -90,6 +91,10 @@ struct CastTargetView: View {
             Section {
                 LabeledContent("IP address", value: target.ip)
                 LabeledContent("Works with", value: target.kinds.joined(separator: ", "))
+            }
+
+            if showRenderer && !target.rc.isEmpty && !target.music {
+                RendererPanel(info: Renderer.Info(avt: target.avt, rc: target.rc), runner: runner)
             }
 
             if !target.dial.isEmpty {

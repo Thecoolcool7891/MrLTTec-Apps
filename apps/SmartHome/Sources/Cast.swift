@@ -9,6 +9,7 @@ struct CastTarget: Identifiable, Hashable {
     let ip: String
     var name: String
     var avt: String = ""          // DLNA AVTransport control URL
+    var rc: String = ""           // DLNA RenderingControl control URL (TV volume and mute)
     var dial: String = ""         // DIAL application URL that can launch YouTube
     var cast = false
     var air = false
@@ -330,6 +331,7 @@ enum CastScan {
     private static func identify(_ ip: String, dlna: String?, dial: String?, ports: Set<UInt16>) async -> CastTarget? {
         var t = CastTarget(ip: ip, name: "")
         if let loc = dlna, let x = try? await Http.call(loc, timeout: 2).text {
+            Store.set("dlnaLoc", ip, loc)
             t.name = xmlTag(x, "friendlyName") ?? ""
             if let room = xmlTag(x, "roomName") { t.name = room }
             t.music = (xmlTag(x, "manufacturer") ?? "").contains("Sonos")
@@ -337,11 +339,10 @@ enum CastScan {
                 for m in rx.matches(in: x, range: NSRange(x.startIndex..., in: x)) {
                     guard let r = Range(m.range(at: 1), in: x) else { continue }
                     let svc = String(x[r])
-                    if (xmlTag(svc, "serviceType") ?? "").contains("AVTransport"), let ctl = xmlTag(svc, "controlURL"),
-                       let base = URL(string: loc), let u = URL(string: ctl, relativeTo: base) {
-                        t.avt = u.absoluteString
-                        break
-                    }
+                    let st = xmlTag(svc, "serviceType") ?? ""
+                    guard let ctl = xmlTag(svc, "controlURL"), let base = URL(string: loc), let u = URL(string: ctl, relativeTo: base) else { continue }
+                    if st.contains("AVTransport") && t.avt.isEmpty { t.avt = u.absoluteString }
+                    else if st.contains("RenderingControl") && t.rc.isEmpty { t.rc = u.absoluteString }
                 }
             }
         }

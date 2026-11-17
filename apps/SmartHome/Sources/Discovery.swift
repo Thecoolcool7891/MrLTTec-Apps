@@ -11,6 +11,7 @@ enum Discovery {
         async let wiz = Wiz.find()
         async let xbox = Xbox.find(ips)
         async let atvs = AppleTV.browse(seconds: 3)
+        async let renderers = Renderer.search(ips)
         let targets = ips.flatMap { ip in ports.map { (ip, $0) } }
         let sweep = (try? await blocking { LowNet.tcpSweep(targets, timeoutMs: 2500) }) ?? LowNet.SweepResult()
 
@@ -32,6 +33,14 @@ enum Discovery {
         for a in await atvs where !out.contains(where: { $0["ip"] == a.ip && $0["type"] == "appletv" }) {
             Store.set("atvPort", a.ip, "\(a.port)")
             out.append(["ip": a.ip, "type": "appletv", "name": a.name, "detail": "Apple TV"])
+        }
+        // DLNA renderers (TVs): volume, mute and playback, like Home Assistant's DLNA Digital Media Renderer.
+        for (ip, loc) in await renderers {
+            Store.set("dlnaLoc", ip, loc)
+            if out.contains(where: { $0["ip"] == ip && $0["type"] == "sonos" }) { continue }
+            guard let i = try? await Renderer.describe(loc), !i.maker.contains("Sonos"), !i.rc.isEmpty || !i.avt.isEmpty else { continue }
+            let detail = [i.maker, i.model].filter { !$0.isEmpty }.joined(separator: " ")
+            out.append(["ip": ip, "type": "dlna", "name": i.name.isEmpty ? "TV" : i.name, "detail": detail.isEmpty ? "DLNA renderer" : detail])
         }
         return out.sorted { ipLess($0["ip"] ?? "", $1["ip"] ?? "") }
     }

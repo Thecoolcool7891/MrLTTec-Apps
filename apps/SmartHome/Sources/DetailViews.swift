@@ -18,6 +18,7 @@ struct DeviceDetailView: View {
             case "firetv": FireTVView(device: device)
             case "adb": AdbView(device: device)
             case "appletv": AppleTVView(device: device)
+            case "dlna": DlnaTVView(device: device)
             default: UnsupportedView(device: device)
             }
         }
