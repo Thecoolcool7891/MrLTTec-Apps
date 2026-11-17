@@ -290,9 +290,49 @@
       "versionDescription": "MrLTTec Control: bigger Gaming PC tile on Home",
       "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/HomeControl-v1.0.29/HomeControl-1.0.29.ipa",
       "size": 1683640
+    },
+    {
+      "versions": [
+        {
+          "version": "1.0.30",
+          "buildVersion": "30",
+          "date": "2026-11-17T03:06:48Z",
+          "localizedDescription": "Toast: new app for the Toast Bot school assistant (chat, grades, plan, study mode)",
+          "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/Toast-v1.0.30/Toast-1.0.30.ipa",
+          "size": 668207,
+          "minOSVersion": "26.0"
+        }
+      ],
+      "name": "Toast",
+      "bundleIdentifier": "com.mrlttec.toast",
+      "developerName": "MrLTTec",
+      "subtitle": "MrLTTec's school assistant, over Tailscale.",
+      "localizedDescription": "The native app for the Toast Bot server. Chat with Toast and send it photos, PDFs and notes. See today's schedule, live grades and GPA, what's due, upcoming tests, grade goals and reminders. Study mode quizzes you one question at a time. It only connects through the owner's Tailscale network and needs a sign-in code from Toast.",
+      "iconURL": "https://raw.githubusercontent.com/Thecoolcool7891/MrLTTec-Apps/main/apps/Toast/icon.png",
+      "tintColor": "#8B5A35",
+      "category": "utilities",
+      "screenshots": [],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {}
+      },
+      "version": "1.0.30",
+      "versionDate": "2026-11-17T03:06:48Z",
+      "versionDescription": "Toast: new app for the Toast Bot school assistant (chat, grades, plan, study mode)",
+      "downloadURL": "https://github.com/Thecoolcool7891/MrLTTec-Apps/releases/download/Toast-v1.0.30/Toast-1.0.30.ipa",
+      "size": 668207
     }
   ],
   "news": [
+    {
+      "title": "Toast 1.0.30 is here",
+      "identifier": "toast-1.0.30",
+      "caption": "MrLTTec's school assistant as a real iPhone app. Chat with Toast, see grades, what's due, tests and goals, over Tailscale.\n\nWhat's new:\n• Chat with Toast and send photos, camera shots, PDFs and text files\n• Home: today's schedule, tests, what's due, grades and GPA, goals, reminders\n• Grades: every class with a live Focus read, zeros worth fixing, every assignment\n• Plan: due work, test tracker, grade goals, reminders\n• Study mode: Toast quizzes you one question at a time\n• Remind feed, weekly recap, morning brief, Toast's notebook",
+      "date": "2026-11-17T03:06:48Z",
+      "tintColor": "#583814",
+      "notify": false,
+      "appID": "com.mrlttec.toast"
+    },
     {
       "title": "MrLTTec Control 1.0.29 is here",
       "identifier": "mrlttec-control-1.0.29",
